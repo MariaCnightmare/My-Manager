@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My-Manager Dashboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 24px; }
+    h1 { margin: 0 0 6px; }
+    .meta { color: #555; margin-bottom: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 12px 0 18px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 12px; }
+    .k { color: #666; font-size: 12px; }
+    .v { font-size: 28px; font-weight: 700; }
+    .warn { border: 1px solid #ffb3b3; background: #fff3f3; border-radius: 12px; padding: 12px; margin: 16px 0; }
+    .ok { border: 1px solid #b8e0b8; background: #f3fff3; border-radius: 12px; padding: 12px; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border-bottom: 1px solid #eee; padding: 10px; vertical-align: top; }
+    th { text-align: left; color: #444; font-size: 12px; }
+    td { font-size: 13px; }
+    a { color: #0b5fff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .sub { color: #666; font-size: 12px; margin-top: 4px; }
+    .sm { color: #444; font-size: 12px; cursor: pointer; }
+    pre.body { white-space: pre-wrap; word-break: break-word; background: #f7f7f7; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
+    .st { width: 120px; }
+    .tp { width: 120px; }
+    .id { width: 60px; }
+  </style>
+</head>
+<body>
+  <h1>My-Manager Dashboard</h1>
+  <div class="meta">
+    Generated: 2026-02-27 02:32 JST<br/>
+    Total (reported): 3 / Items: 3
+  </div>
+
+  <div class="grid">
+    <div class='card'><div class='k'>Inbox</div><div class='v'>2</div></div><div class='card'><div class='k'>Ready</div><div class='v'>1</div></div><div class='card'><div class='k'>Doing</div><div class='v'>0</div></div><div class='card'><div class='k'>Blocked</div><div class='v'>0</div></div><div class='card'><div class='k'>Done</div><div class='v'>0</div></div><div class='card'><div class='k'>(Unknown)</div><div class='v'>0</div></div>
+  </div>
+
+  <div class='ok'><h2>Rule Violations</h2><p>なし</p></div>
+
+  <h2>Items</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Status</th><th>Type</th><th>#</th><th>Title</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class='st'>Inbox</td><td class='tp'>Decide</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/1' target='_blank'>[Decide] 全Repo運用の定義</a><div class='sub'>MariaCnightmare/My-Manager</div><details><summary class='sm'>本文</summary><pre class='body'>・台帳に入れる対象（Issue/PR/Draft）を決めた
+・“各RepoにIssue起票”か“My-Managerに集約”か決めた</pre></details></td></tr>
+<tr><td class='st'>Inbox</td><td class='tp'>Investigate</td><td class='id'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div><details><summary class='sm'>本文</summary><pre class='body'></pre></details></td></tr>
+<tr><td class='st'>Ready</td><td class='tp'>Implement</td><td class='id'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div><details><summary class='sm'>本文</summary><pre class='body'></pre></details></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>
