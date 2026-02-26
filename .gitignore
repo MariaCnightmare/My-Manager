@@ -1,0 +1,4 @@
+# local artifacts
+data/
+.env
+.DS_Store
