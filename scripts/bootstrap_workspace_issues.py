@@ -31,7 +31,6 @@ P2_DESCRIPTION = "Priority 2"
 HTTPS_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+?)(?:\.git)?$")
 SSH_RE = re.compile(r"^git@github\.com:([^/]+)/([^/]+?)(?:\.git)?$")
 
-# Default exclusion to avoid self-referential noise.
 EXCLUDED_REPOS = {
     "mariacnightmare/my-manager",
 }
@@ -94,28 +93,47 @@ def collect_git_repos(workspace: Path) -> List[Path]:
 
 
 def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
-    code, out, err = run_cmd(
-        [
-            "gh",
-            "label",
-            "list",
-            "--repo",
-            f"{owner}/{repo}",
-            "--limit",
-            "200",
-            "--json",
-            "name",
-        ]
-    )
-    if code != 0:
-        if is_permission_error(err):
-            return False, f"skip: cannot read labels ({err or 'unknown error'})"
-        return False, f"failed: gh label list ({err or out or 'unknown error'})"
+    """
+    Ensure P2 label exists.
 
-    try:
-        labels = json.loads(out)
-    except json.JSONDecodeError:
-        return False, "failed: invalid JSON from gh label list"
+    NOTE:
+    We intentionally use `gh api` instead of `gh label` because some environments
+    observed `gh label list/create` returning 404 even when REST labels endpoint works.
+    """
+    # --- list labels via REST (paginate defensively) ---
+    labels: List[dict] = []
+    page = 1
+    while True:
+        code, out, err = run_cmd(
+            [
+                "gh",
+                "api",
+                f"repos/{owner}/{repo}/labels",
+                "-f",
+                "per_page=100",
+                "-f",
+                f"page={page}",
+            ]
+        )
+        if code != 0:
+            if is_permission_error(err):
+                return False, f"skip: cannot read labels ({err or 'unknown error'})"
+            return False, f"failed: gh api labels list ({err or out or 'unknown error'})"
+
+        try:
+            batch = json.loads(out) if out else []
+        except json.JSONDecodeError:
+            return False, "failed: invalid JSON from gh api labels list"
+
+        if not isinstance(batch, list):
+            return False, "failed: unexpected response from gh api labels list"
+
+        labels.extend(batch)
+        if len(batch) < 100:
+            break
+        page += 1
+        if page > 10:  # safety
+            break
 
     if any((it.get("name") == P2_LABEL) for it in labels):
         return True, "label exists"
@@ -123,26 +141,29 @@ def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
     if dry_run:
         return True, f"dry-run: would create label {P2_LABEL}"
 
+    # --- create label via REST ---
     code, out, err = run_cmd(
         [
             "gh",
-            "label",
-            "create",
-            P2_LABEL,
-            "--repo",
-            f"{owner}/{repo}",
-            "--color",
-            P2_COLOR,
-            "--description",
-            P2_DESCRIPTION,
+            "api",
+            "-X",
+            "POST",
+            f"repos/{owner}/{repo}/labels",
+            "-f",
+            f"name={P2_LABEL}",
+            "-f",
+            f"color={P2_COLOR}",
+            "-f",
+            f"description={P2_DESCRIPTION}",
         ]
     )
     if code != 0:
+        # If already exists (race), treat as success
         if "already exists" in (err or "").lower():
             return True, "label already exists"
         if is_permission_error(err):
             return False, f"skip: cannot create label ({err or 'unknown error'})"
-        return False, f"failed: gh label create ({err or out or 'unknown error'})"
+        return False, f"failed: gh api label create ({err or out or 'unknown error'})"
 
     return True, "label created"
 
@@ -280,7 +301,6 @@ def process_repo(path: Path, project_owner: str, project_number: int, dry_run: b
     owner, repo = parsed
     repo_full = f"{owner}/{repo}"
 
-    # Exclude manager repo by default to avoid noise.
     if repo_full.lower() in EXCLUDED_REPOS:
         return RepoResult(str(path), repo_full, "skipped", "manager repo excluded")
 
