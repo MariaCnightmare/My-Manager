@@ -31,9 +31,10 @@ P2_DESCRIPTION = "Priority 2"
 HTTPS_RE = re.compile(r"^https://github\.com/([^/]+)/([^/]+?)(?:\.git)?$")
 SSH_RE = re.compile(r"^git@github\.com:([^/]+)/([^/]+?)(?:\.git)?$")
 
+# Exclude repos that should not be bootstrapped.
 EXCLUDED_REPOS = {
     "mariacnightmare/my-manager",
-    "apiron-lab/apiron-lab",
+    "apiron-lab/apiron-lab",  # org-name repo noise
 }
 
 
@@ -93,45 +94,36 @@ def collect_git_repos(workspace: Path) -> List[Path]:
     return repos
 
 
-def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
+def ensure_label_best_effort(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
     """
-    Ensure P2 label exists.
+    Best-effort ensure P2 label exists.
 
-    Use `gh api` with explicit query string for GET to avoid CLI argument quirks.
+    Important:
+    - GET /labels works (200) in your env.
+    - POST /labels may return 404 (cannot create labels).
+    Therefore: if label cannot be created, we proceed WITHOUT label.
     """
     print(f"[DBG] labels api target: repos/{owner}/{repo}/labels")
 
-    labels: List[dict] = []
-    page = 1
-    while True:
-        endpoint = f"repos/{owner}/{repo}/labels?per_page=100&page={page}"
-        code, out, err = run_cmd(["gh", "api", endpoint])
-        if code != 0:
-            if is_permission_error(err):
-                return False, f"skip: cannot read labels ({err or 'unknown error'})"
-            return False, f"failed: gh api labels list ({err or out or 'unknown error'})"
+    # list labels (GET with explicit query string)
+    endpoint = f"repos/{owner}/{repo}/labels?per_page=100&page=1"
+    code, out, err = run_cmd(["gh", "api", endpoint])
+    if code != 0:
+        return False, f"skip: cannot read labels ({err or out or 'unknown error'})"
 
-        try:
-            batch = json.loads(out) if out else []
-        except json.JSONDecodeError:
-            return False, "failed: invalid JSON from gh api labels list"
-
-        if not isinstance(batch, list):
-            return False, "failed: unexpected response from gh api labels list"
-
-        labels.extend(batch)
-        if len(batch) < 100:
-            break
-        page += 1
-        if page > 10:
-            break
+    try:
+        labels = json.loads(out) if out else []
+    except json.JSONDecodeError:
+        return False, "failed: invalid JSON from gh api labels list"
 
     if any((it.get("name") == P2_LABEL) for it in labels):
         return True, "label exists"
 
     if dry_run:
-        return True, f"dry-run: would create label {P2_LABEL}"
+        # In dry-run we report as if label can be created, but note that creation may be unavailable.
+        return False, f"dry-run: label missing; will proceed without label if creation is unavailable"
 
+    # try to create label (POST) - may 404 in your environment
     code, out, err = run_cmd(
         [
             "gh",
@@ -148,11 +140,8 @@ def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
         ]
     )
     if code != 0:
-        if "already exists" in (err or "").lower():
-            return True, "label already exists"
-        if is_permission_error(err):
-            return False, f"skip: cannot create label ({err or 'unknown error'})"
-        return False, f"failed: gh api label create ({err or out or 'unknown error'})"
+        # cannot create -> proceed without label
+        return False, f"skip: cannot create label ({err or out or 'unknown error'})"
 
     return True, "label created"
 
@@ -198,7 +187,6 @@ def repo_metadata(owner: str, repo: str) -> Tuple[Optional[dict], str]:
         if is_permission_error(err):
             return None, f"skip: no access to repo metadata ({err or 'unknown error'})"
         return None, f"failed: gh api repos/{owner}/{repo} ({err or out or 'unknown error'})"
-
     try:
         return json.loads(out), "ok"
     except json.JSONDecodeError:
@@ -209,15 +197,7 @@ def enable_issues(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
     if dry_run:
         return True, "dry-run: would enable issues"
     code, out, err = run_cmd(
-        [
-            "gh",
-            "api",
-            "-X",
-            "PATCH",
-            f"repos/{owner}/{repo}",
-            "-f",
-            "has_issues=true",
-        ]
+        ["gh", "api", "-X", "PATCH", f"repos/{owner}/{repo}", "-f", "has_issues=true"]
     )
     if code != 0:
         if is_permission_error(err):
@@ -226,25 +206,25 @@ def enable_issues(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
     return True, "issues enabled"
 
 
-def create_issue(owner: str, repo: str, dry_run: bool) -> Tuple[Optional[str], str]:
+def create_issue(owner: str, repo: str, dry_run: bool, with_label: bool) -> Tuple[Optional[str], str]:
     if dry_run:
         return "dry-run://issue", "dry-run: would create issue"
 
-    code, out, err = run_cmd(
-        [
-            "gh",
-            "issue",
-            "create",
-            "--repo",
-            f"{owner}/{repo}",
-            "--title",
-            ISSUE_TITLE,
-            "--body",
-            ISSUE_BODY,
-            "--label",
-            P2_LABEL,
-        ]
-    )
+    cmd = [
+        "gh",
+        "issue",
+        "create",
+        "--repo",
+        f"{owner}/{repo}",
+        "--title",
+        ISSUE_TITLE,
+        "--body",
+        ISSUE_BODY,
+    ]
+    if with_label:
+        cmd += ["--label", P2_LABEL]
+
+    code, out, err = run_cmd(cmd)
     if code != 0:
         if is_permission_error(err):
             return None, f"skip: cannot create issue ({err or 'unknown error'})"
@@ -261,16 +241,7 @@ def add_to_project(project_owner: str, project_number: int, issue_url: str, dry_
         return True, f"dry-run: would add to project {project_owner}/{project_number}"
 
     code, out, err = run_cmd(
-        [
-            "gh",
-            "project",
-            "item-add",
-            str(project_number),
-            "--owner",
-            project_owner,
-            "--url",
-            issue_url,
-        ]
+        ["gh", "project", "item-add", str(project_number), "--owner", project_owner, "--url", issue_url]
     )
     if code != 0:
         if is_permission_error(err):
@@ -315,15 +286,14 @@ def process_repo(path: Path, project_owner: str, project_number: int, dry_run: b
     if exists:
         return RepoResult(str(path), repo_full, "skipped", f"issue already exists ({msg})")
 
-    ok, msg = ensure_label(owner, repo, dry_run)
-    if not ok:
-        status = "skipped" if msg.startswith("skip:") else "failed"
-        return RepoResult(str(path), repo_full, status, msg)
+    # Best-effort label: if cannot create, proceed without label.
+    label_ok, lmsg = ensure_label_best_effort(owner, repo, dry_run)
+    with_label = label_ok
 
-    issue_url, msg = create_issue(owner, repo, dry_run)
+    issue_url, cmsg = create_issue(owner, repo, dry_run, with_label=with_label)
     if not issue_url:
-        status = "skipped" if msg.startswith("skip:") else "failed"
-        return RepoResult(str(path), repo_full, status, msg)
+        status = "skipped" if cmsg.startswith("skip:") else "failed"
+        return RepoResult(str(path), repo_full, status, cmsg)
 
     ok, pmsg = add_to_project(project_owner, project_number, issue_url, dry_run)
     if not ok:
@@ -331,14 +301,16 @@ def process_repo(path: Path, project_owner: str, project_number: int, dry_run: b
         return RepoResult(str(path), repo_full, status, pmsg)
 
     if dry_run:
+        suffix = "with label P2" if with_label else "without label"
         return RepoResult(
             str(path),
             repo_full,
             "success",
-            f"would create issue '{ISSUE_TITLE}' with label {P2_LABEL} and add to project {project_owner}/{project_number}",
+            f"would create issue '{ISSUE_TITLE}' {suffix} and add to project {project_owner}/{project_number}",
         )
 
-    return RepoResult(str(path), repo_full, "success", f"created issue {issue_url} and added to project")
+    suffix = "with label" if with_label else "without label"
+    return RepoResult(str(path), repo_full, "success", f"created issue ({suffix}) {issue_url} and added to project")
 
 
 def parse_args() -> argparse.Namespace:
