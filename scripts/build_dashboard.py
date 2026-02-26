@@ -43,26 +43,41 @@ def now_jst_str(ts: int) -> str:
     return dt.strftime("%Y-%m-%d %H:%M JST")
 
 
+def normalize_status(st: Any) -> str:
+    s = (st or "(Unknown)")
+    if s in STATUS_ORDER:
+        return s
+    return "(Unknown)"
+
+
 def build_counts(items: List[Dict[str, Any]]) -> Dict[str, int]:
     counts: Dict[str, int] = {s: 0 for s in STATUS_ORDER}
     counts["(Unknown)"] = 0
     for it in items:
-        st = it.get("status") or "(Unknown)"
-        if st in counts:
-            counts[st] += 1
-        else:
-            counts["(Unknown)"] += 1
+        st = normalize_status(it.get("status"))
+        counts[st] += 1
     return counts
+
+
+def repo_key(it: Dict[str, Any]) -> str:
+    c = it.get("content") or {}
+    return (c.get("repository") or it.get("repository") or "").strip()
+
+
+def repo_url(repo_full: str) -> str:
+    if not repo_full:
+        return ""
+    return f"https://github.com/{repo_full}"
 
 
 def violations(items: List[Dict[str, Any]]) -> List[str]:
     v: List[str] = []
 
-    doing = [it for it in items if (it.get("status") == "Doing")]
+    doing = [it for it in items if normalize_status(it.get("status")) == "Doing"]
     if len(doing) > 2:
         v.append(f"WIP超過: Doingが {len(doing)} 件（上限2）")
 
-    blocked = [it for it in items if (it.get("status") == "Blocked")]
+    blocked = [it for it in items if normalize_status(it.get("status")) == "Blocked"]
     for it in blocked:
         body = ((it.get("content") or {}).get("body") or "")
         if not RE_NEXT.search(body):
@@ -86,7 +101,7 @@ def sort_items(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     order = {s: i for i, s in enumerate(STATUS_ORDER)}
 
     def key(it: Dict[str, Any]) -> Tuple[int, str]:
-        st = it.get("status") or "(Unknown)"
+        st = normalize_status(it.get("status"))
         return (order.get(st, 999), (it.get("title") or ""))
 
     return sorted(items, key=key)
@@ -98,9 +113,9 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
         c = it.get("content") or {}
         url = c.get("url") or ""
         num = c.get("number")
-        repo = c.get("repository") or ""
+        repo = (c.get("repository") or "").strip()
         ttype = infer_type(it.get("title") or "")
-        st = it.get("status") or "(Unknown)"
+        st = normalize_status(it.get("status"))
         title = it.get("title") or ""
         body = (c.get("body") or "").strip()
 
@@ -112,15 +127,25 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
             "Done": "st-done",
         }.get(st, "st-unknown")
 
+        # detailsは本文があるときだけ表示
+        details_html = ""
+        if body:
+            details_html = (
+                "<details class='details'>"
+                "<summary>本文</summary>"
+                f"<pre class='body'>{esc(body)}</pre>"
+                "</details>"
+            )
+
         rows.append(
             "<tr>"
-            f"<td><span class='pill {st_class}'>{esc(st)}</span></td>"
-            f"<td><span class='pill tp'>{esc(ttype)}</span></td>"
-            f"<td class='num'>{esc(str(num) if num is not None else '-')}</td>"
-            f"<td class='tl'>"
+            f"<td class='colStatus'><span class='pill {st_class}'>{esc(st)}</span></td>"
+            f"<td class='colType'><span class='pill tp'>{esc(ttype)}</span></td>"
+            f"<td class='colNum'>{esc(str(num) if num is not None else '-')}</td>"
+            f"<td class='colTitle'>"
             f"<a href='{esc(url)}' target='_blank' rel='noopener noreferrer'>{esc(title)}</a>"
             f"<div class='sub'>{esc(repo)}</div>"
-            f"<details class='details'><summary>本文</summary><pre class='body'>{esc(body)}</pre></details>"
+            f"{details_html}"
             "</td>"
             "</tr>"
         )
@@ -128,7 +153,7 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
 
 
 def render_group(items: List[Dict[str, Any]], status: str, default_open: bool) -> str:
-    group = [it for it in items if ((it.get("status") or "(Unknown)") == status)]
+    group = [it for it in items if normalize_status(it.get("status")) == status]
     if not group:
         return ""
     rows = render_rows(group)
@@ -140,7 +165,7 @@ def render_group(items: List[Dict[str, Any]], status: str, default_open: bool) -
     <span class="groupCount">{len(group)}</span>
   </summary>
   <div class="tableWrap">
-    <table>
+    <table class="itemsTable">
       <thead>
         <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
       </thead>
@@ -153,6 +178,80 @@ def render_group(items: List[Dict[str, Any]], status: str, default_open: bool) -
 """.strip()
 
 
+def build_repo_summary(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    # repo -> status -> count
+    acc: Dict[str, Dict[str, int]] = {}
+    for it in items:
+        rk = repo_key(it) or "(unknown repo)"
+        st = normalize_status(it.get("status"))
+        if rk not in acc:
+            acc[rk] = {s: 0 for s in STATUS_ORDER}
+            acc[rk]["(Unknown)"] = 0
+        acc[rk][st] += 1
+
+    out: List[Dict[str, Any]] = []
+    for rk, m in acc.items():
+        total = sum(m.values())
+        out.append({"repo": rk, "counts": m, "total": total})
+
+    # sort: total desc
+    out.sort(key=lambda x: (-int(x["total"]), x["repo"]))
+    return out
+
+
+def render_repo_rows(repo_summ: List[Dict[str, Any]]) -> str:
+    seg_keys = ["Inbox", "Ready", "Doing", "Blocked", "Done", "(Unknown)"]
+    seg_class = {
+        "Inbox": "seg inbox",
+        "Ready": "seg ready",
+        "Doing": "seg doing",
+        "Blocked": "seg blocked",
+        "Done": "seg done",
+        "(Unknown)": "seg unknown",
+    }
+
+    rows = []
+    for r in repo_summ:
+        repo = r["repo"]
+        total = int(r["total"])
+        counts: Dict[str, int] = r["counts"]
+
+        # stacked bar widths in %
+        segs = []
+        for k in seg_keys:
+            n = int(counts.get(k, 0))
+            if total <= 0 or n <= 0:
+                continue
+            w = (n / total) * 100.0
+            segs.append(f"<span class='{seg_class[k]}' style='width:{w:.4f}%'></span>")
+
+        bar = "<div class='stack'>" + "".join(segs) + "</div>" if segs else "<div class='stack'></div>"
+
+        # repo link if looks like owner/name
+        link = repo_url(repo) if "/" in repo and " " not in repo else ""
+        repo_html = esc(repo)
+        if link:
+            repo_html = f"<a href='{esc(link)}' target='_blank' rel='noopener noreferrer'>{esc(repo)}</a>"
+
+        # compact counts
+        badge = (
+            f"<span class='mini'>I:{counts.get('Inbox',0)}</span>"
+            f"<span class='mini'>R:{counts.get('Ready',0)}</span>"
+            f"<span class='mini'>Dg:{counts.get('Doing',0)}</span>"
+            f"<span class='mini'>Bl:{counts.get('Blocked',0)}</span>"
+            f"<span class='mini'>Dn:{counts.get('Done',0)}</span>"
+            f"<span class='mini warn'>U:{counts.get('(Unknown)',0)}</span>"
+        )
+
+        rows.append(
+            "<tr>"
+            f"<td class='repoCol'>{repo_html}<div class='sub small'>items: {total}</div></td>"
+            f"<td class='barCol'>{bar}<div class='badges'>{badge}</div></td>"
+            "</tr>"
+        )
+    return "\n".join(rows)
+
+
 def main() -> None:
     src = read_json("data/project_items.json")
     items = src.get("items") or []
@@ -163,7 +262,6 @@ def main() -> None:
     counts = build_counts(items_sorted)
     v = violations(items_sorted)
 
-    # Card specs: (label, key, cssClass)
     cards_spec = [
         ("Inbox", "Inbox", "c-inbox"),
         ("Ready", "Ready", "c-ready"),
@@ -187,7 +285,10 @@ def main() -> None:
     else:
         v_html = "<div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>"
 
-    # Open key groups by default (glance-first)
+    # Repo summary
+    repo_summ = build_repo_summary(items_sorted)
+    repo_rows = render_repo_rows(repo_summ)
+
     groups = []
     groups.append(render_group(items_sorted, "Inbox", True))
     groups.append(render_group(items_sorted, "Ready", True))
@@ -236,7 +337,7 @@ def main() -> None:
     }}
 
     .wrap {{
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 26px 18px 48px;
     }}
@@ -262,13 +363,13 @@ def main() -> None:
       font-size: 13px;
       line-height: 1.45;
     }}
-    .meta b {{ color: var(--text); font-weight: 700; }}
+    .meta b {{ color: var(--text); font-weight: 800; }}
 
     .grid {{
       display: grid;
       grid-template-columns: repeat(6, minmax(120px, 1fr));
       gap: 12px;
-      margin: 14px 0 18px;
+      margin: 14px 0 10px;
     }}
 
     .card {{
@@ -286,7 +387,7 @@ def main() -> None:
     }}
     .v {{
       font-size: 30px;
-      font-weight: 800;
+      font-weight: 900;
       margin-top: 6px;
     }}
 
@@ -305,7 +406,7 @@ def main() -> None:
       border: 1px solid var(--border);
       border-radius: var(--r);
       padding: 14px 14px 12px;
-      margin: 14px 0 22px;
+      margin: 14px 0 18px;
       box-shadow: var(--shadow);
       background: rgba(255,255,255,.03);
     }}
@@ -328,11 +429,71 @@ def main() -> None:
     }}
 
     h2.section {{
-      margin: 18px 0 10px;
+      margin: 14px 0 10px;
       font-size: 16px;
       color: var(--text);
     }}
 
+    /* Repo summary */
+    .repoTable {{
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }}
+    .repoTable th, .repoTable td {{
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 12px 10px;
+      vertical-align: top;
+    }}
+    .repoTable th {{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: left;
+    }}
+    .repoCol {{
+      width: 38%;
+      word-break: break-word;
+    }}
+    .barCol {{
+      width: 62%;
+    }}
+    .stack {{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: hidden;
+      display: flex;
+    }}
+    .seg {{ height: 100%; display: block; }}
+    .seg.inbox {{ background: rgba(79,124,255,.85); }}
+    .seg.ready {{ background: rgba(34,197,94,.85); }}
+    .seg.doing {{ background: rgba(168,85,247,.85); }}
+    .seg.blocked {{ background: rgba(239,68,68,.85); }}
+    .seg.done {{ background: rgba(56,189,248,.85); }}
+    .seg.unknown {{ background: rgba(245,158,11,.90); }}
+
+    .badges {{
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }}
+    .mini {{
+      font-size: 11px;
+      color: rgba(255,255,255,.70);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: rgba(0,0,0,.18);
+    }}
+    .mini.warn {{
+      border-color: rgba(245,158,11,.30);
+      color: rgba(255,215,140,.95);
+    }}
+
+    /* Groups */
     .group {{
       border: 1px solid var(--border);
       border-radius: var(--r);
@@ -352,14 +513,10 @@ def main() -> None:
       color: var(--text);
     }}
     .groupSum::-webkit-details-marker {{ display: none; }}
-
-    .groupName {{
-      font-weight: 800;
-      letter-spacing: .2px;
-    }}
+    .groupName {{ font-weight: 900; letter-spacing: .2px; }}
     .groupCount {{
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
       padding: 4px 10px;
       border-radius: 999px;
@@ -368,33 +525,40 @@ def main() -> None:
     }}
 
     .tableWrap {{ padding: 0 10px 10px; }}
-    table {{
+
+    /* Items table: stabilize layout (no sticky headers to avoid overlap) */
+    .itemsTable {{
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
       margin-top: 6px;
       font-size: 13px;
     }}
-    thead th {{
-      position: sticky;
-      top: 78px; /* header height */
-      background: rgba(11,15,23,.92);
-      backdrop-filter: blur(8px);
+    .itemsTable thead th {{
+      background: rgba(0,0,0,.18);
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       text-align: left;
       padding: 10px 10px;
       border-bottom: 1px solid var(--border);
     }}
-    tbody td {{
+    .itemsTable tbody td {{
       padding: 12px 10px;
       border-bottom: 1px solid rgba(255,255,255,.06);
       vertical-align: top;
     }}
-    tbody tr:hover {{
-      background: rgba(255,255,255,.04);
+    .itemsTable tbody tr:hover {{ background: rgba(255,255,255,.04); }}
+
+    .colStatus {{ width: 120px; }}
+    .colType {{ width: 120px; }}
+    .colNum {{ width: 60px; color: var(--muted); }}
+    .colTitle {{
+      width: auto;
+      overflow: hidden;
+      word-break: break-word;
     }}
-    .num {{ width: 60px; color: var(--muted); }}
+
     a {{
       color: rgba(130,180,255,.95);
       text-decoration: none;
@@ -406,17 +570,20 @@ def main() -> None:
       font-size: 12px;
       margin-top: 6px;
     }}
+    .sub.small {{
+      margin-top: 6px;
+      font-size: 11px;
+    }}
 
     .pill {{
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: rgba(0,0,0,.20);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--muted);
       white-space: nowrap;
     }}
@@ -430,7 +597,7 @@ def main() -> None:
     .st-unknown {{ border-color: rgba(245,158,11,.40); color: rgba(255,215,140,.98); }}
 
     .details {{
-      margin-top: 8px;
+      margin-top: 10px;
     }}
     .details summary {{
       cursor: pointer;
@@ -438,6 +605,13 @@ def main() -> None:
       font-size: 12px;
       user-select: none;
       list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      background: rgba(0,0,0,.16);
     }}
     .details summary::-webkit-details-marker {{ display: none; }}
     pre.body {{
@@ -455,11 +629,12 @@ def main() -> None:
 
     @media (max-width: 980px) {{
       .grid {{ grid-template-columns: repeat(3, minmax(120px, 1fr)); }}
-      thead th {{ top: 104px; }}
+      .repoCol {{ width: 44%; }}
+      .barCol {{ width: 56%; }}
     }}
     @media (max-width: 560px) {{
       .grid {{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }}
-      thead th {{ top: 118px; }}
+      .repoCol, .barCol {{ width: auto; }}
     }}
   </style>
 </head>
@@ -477,6 +652,16 @@ def main() -> None:
     </header>
 
     {v_html}
+
+    <h2 class="section">Repositories</h2>
+    <div class="panel">
+      <table class="repoTable">
+        <thead><tr><th>Repository</th><th>Status composition</th></tr></thead>
+        <tbody>
+          {repo_rows}
+        </tbody>
+      </table>
+    </div>
 
     <h2 class="section">Items</h2>
     {groups_html}

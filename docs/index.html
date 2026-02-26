@@ -37,7 +37,7 @@
     }
 
     .wrap {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 26px 18px 48px;
     }
@@ -63,13 +63,13 @@
       font-size: 13px;
       line-height: 1.45;
     }
-    .meta b { color: var(--text); font-weight: 700; }
+    .meta b { color: var(--text); font-weight: 800; }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(6, minmax(120px, 1fr));
       gap: 12px;
-      margin: 14px 0 18px;
+      margin: 14px 0 10px;
     }
 
     .card {
@@ -87,7 +87,7 @@
     }
     .v {
       font-size: 30px;
-      font-weight: 800;
+      font-weight: 900;
       margin-top: 6px;
     }
 
@@ -106,7 +106,7 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       padding: 14px 14px 12px;
-      margin: 14px 0 22px;
+      margin: 14px 0 18px;
       box-shadow: var(--shadow);
       background: rgba(255,255,255,.03);
     }
@@ -129,11 +129,71 @@
     }
 
     h2.section {
-      margin: 18px 0 10px;
+      margin: 14px 0 10px;
       font-size: 16px;
       color: var(--text);
     }
 
+    /* Repo summary */
+    .repoTable {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .repoTable th, .repoTable td {
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 12px 10px;
+      vertical-align: top;
+    }
+    .repoTable th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: left;
+    }
+    .repoCol {
+      width: 38%;
+      word-break: break-word;
+    }
+    .barCol {
+      width: 62%;
+    }
+    .stack {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: hidden;
+      display: flex;
+    }
+    .seg { height: 100%; display: block; }
+    .seg.inbox { background: rgba(79,124,255,.85); }
+    .seg.ready { background: rgba(34,197,94,.85); }
+    .seg.doing { background: rgba(168,85,247,.85); }
+    .seg.blocked { background: rgba(239,68,68,.85); }
+    .seg.done { background: rgba(56,189,248,.85); }
+    .seg.unknown { background: rgba(245,158,11,.90); }
+
+    .badges {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .mini {
+      font-size: 11px;
+      color: rgba(255,255,255,.70);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: rgba(0,0,0,.18);
+    }
+    .mini.warn {
+      border-color: rgba(245,158,11,.30);
+      color: rgba(255,215,140,.95);
+    }
+
+    /* Groups */
     .group {
       border: 1px solid var(--border);
       border-radius: var(--r);
@@ -153,14 +213,10 @@
       color: var(--text);
     }
     .groupSum::-webkit-details-marker { display: none; }
-
-    .groupName {
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
+    .groupName { font-weight: 900; letter-spacing: .2px; }
     .groupCount {
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
       padding: 4px 10px;
       border-radius: 999px;
@@ -169,33 +225,40 @@
     }
 
     .tableWrap { padding: 0 10px 10px; }
-    table {
+
+    /* Items table: stabilize layout (no sticky headers to avoid overlap) */
+    .itemsTable {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
       margin-top: 6px;
       font-size: 13px;
     }
-    thead th {
-      position: sticky;
-      top: 78px; /* header height */
-      background: rgba(11,15,23,.92);
-      backdrop-filter: blur(8px);
+    .itemsTable thead th {
+      background: rgba(0,0,0,.18);
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       text-align: left;
       padding: 10px 10px;
       border-bottom: 1px solid var(--border);
     }
-    tbody td {
+    .itemsTable tbody td {
       padding: 12px 10px;
       border-bottom: 1px solid rgba(255,255,255,.06);
       vertical-align: top;
     }
-    tbody tr:hover {
-      background: rgba(255,255,255,.04);
+    .itemsTable tbody tr:hover { background: rgba(255,255,255,.04); }
+
+    .colStatus { width: 120px; }
+    .colType { width: 120px; }
+    .colNum { width: 60px; color: var(--muted); }
+    .colTitle {
+      width: auto;
+      overflow: hidden;
+      word-break: break-word;
     }
-    .num { width: 60px; color: var(--muted); }
+
     a {
       color: rgba(130,180,255,.95);
       text-decoration: none;
@@ -207,17 +270,20 @@
       font-size: 12px;
       margin-top: 6px;
     }
+    .sub.small {
+      margin-top: 6px;
+      font-size: 11px;
+    }
 
     .pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: rgba(0,0,0,.20);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--muted);
       white-space: nowrap;
     }
@@ -231,7 +297,7 @@
     .st-unknown { border-color: rgba(245,158,11,.40); color: rgba(255,215,140,.98); }
 
     .details {
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .details summary {
       cursor: pointer;
@@ -239,6 +305,13 @@
       font-size: 12px;
       user-select: none;
       list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      background: rgba(0,0,0,.16);
     }
     .details summary::-webkit-details-marker { display: none; }
     pre.body {
@@ -256,11 +329,12 @@
 
     @media (max-width: 980px) {
       .grid { grid-template-columns: repeat(3, minmax(120px, 1fr)); }
-      thead th { top: 104px; }
+      .repoCol { width: 44%; }
+      .barCol { width: 56%; }
     }
     @media (max-width: 560px) {
       .grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
-      thead th { top: 118px; }
+      .repoCol, .barCol { width: auto; }
     }
   </style>
 </head>
@@ -269,7 +343,7 @@
     <header>
       <h1>My-Manager Dashboard</h1>
       <div class="meta">
-        Generated: <b>2026-02-27 08:36 JST</b><br/>
+        Generated: <b>2026-02-27 08:44 JST</b><br/>
         Total (reported): <b>17</b> / Items: <b>17</b>
       </div>
       <div class="grid">
@@ -279,6 +353,30 @@
 
     <div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>
 
+    <h2 class="section">Repositories</h2>
+    <div class="panel">
+      <table class="repoTable">
+        <thead><tr><th>Repository</th><th>Status composition</th></tr></thead>
+        <tbody>
+          <tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/My-Manager' target='_blank' rel='noopener noreferrer'>MariaCnightmare/My-Manager</a><div class='sub small'>items: 3</div></td><td class='barCol'><div class='stack'><span class='seg inbox' style='width:66.6667%'></span><span class='seg ready' style='width:33.3333%'></span></div><div class='badges'><span class='mini'>I:2</span><span class='mini'>R:1</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:0</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize' target='_blank' rel='noopener noreferrer'>APIron-lab/CSV-Escape-Sanitize</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/Encoding-Repair' target='_blank' rel='noopener noreferrer'>APIron-lab/Encoding-Repair</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/Universal-Token-Counter' target='_blank' rel='noopener noreferrer'>APIron-lab/Universal-Token-Counter</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/apiron-lab.github.io' target='_blank' rel='noopener noreferrer'>APIron-lab/apiron-lab.github.io</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Andersen-Editor' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Andersen-Editor</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/CheckMechanic' target='_blank' rel='noopener noreferrer'>MariaCnightmare/CheckMechanic</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Fund-Link' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Fund-Link</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io' target='_blank' rel='noopener noreferrer'>MariaCnightmare/MariaCnightmare.github.io</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/O.U.G.I' target='_blank' rel='noopener noreferrer'>MariaCnightmare/O.U.G.I</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Paperbox' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Paperbox</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/PowerLayer' target='_blank' rel='noopener noreferrer'>MariaCnightmare/PowerLayer</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/ReportPlatform' target='_blank' rel='noopener noreferrer'>MariaCnightmare/ReportPlatform</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Stress_Control' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Stress_Control</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/bedrock_client' target='_blank' rel='noopener noreferrer'>MariaCnightmare/bedrock_client</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <h2 class="section">Items</h2>
     <details class="group" open>
   <summary class="groupSum">
@@ -286,14 +384,14 @@
     <span class="groupCount">2</span>
   </summary>
   <div class="tableWrap">
-    <table>
+    <table class="itemsTable">
       <thead>
         <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
       </thead>
       <tbody>
-        <tr><td><span class='pill st-inbox'>Inbox</span></td><td><span class='pill tp'>Decide</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/1' target='_blank' rel='noopener noreferrer'>[Decide] 全Repo運用の定義</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'>・台帳に入れる対象（Issue/PR/Draft）を決めた
+        <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Decide</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/1' target='_blank' rel='noopener noreferrer'>[Decide] 全Repo運用の定義</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'>・台帳に入れる対象（Issue/PR/Draft）を決めた
 ・“各RepoにIssue起票”か“My-Managerに集約”か決めた</pre></details></td></tr>
-<tr><td><span class='pill st-inbox'>Inbox</span></td><td><span class='pill tp'>Investigate</span></td><td class='num'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank' rel='noopener noreferrer'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'></pre></details></td></tr>
+<tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Investigate</span></td><td class='colNum'>3</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank' rel='noopener noreferrer'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div></td></tr>
       </tbody>
     </table>
   </div>
@@ -305,12 +403,12 @@
     <span class="groupCount">1</span>
   </summary>
   <div class="tableWrap">
-    <table>
+    <table class="itemsTable">
       <thead>
         <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
       </thead>
       <tbody>
-        <tr><td><span class='pill st-ready'>Ready</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'></pre></details></td></tr>
+        <tr><td class='colStatus'><span class='pill st-ready'>Ready</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div></td></tr>
       </tbody>
     </table>
   </div>
@@ -322,12 +420,12 @@
     <span class="groupCount">14</span>
   </summary>
   <div class="tableWrap">
-    <table>
+    <table class="itemsTable">
       <thead>
         <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
       </thead>
       <tbody>
-        <tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/Andersen-Editor/issues/3' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Andersen-Editor</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+        <tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>3</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Andersen-Editor/issues/3' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Andersen-Editor</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -339,7 +437,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/CheckMechanic/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/CheckMechanic</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/CheckMechanic/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/CheckMechanic</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -351,7 +449,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/Fund-Link/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Fund-Link</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Fund-Link/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Fund-Link</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -363,7 +461,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/MariaCnightmare.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/MariaCnightmare.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -375,7 +473,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>4</td><td class='tl'><a href='https://github.com/MariaCnightmare/PowerLayer/issues/4' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/PowerLayer</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>4</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/PowerLayer/issues/4' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/PowerLayer</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -387,7 +485,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/ReportPlatform/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/ReportPlatform</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/ReportPlatform/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/ReportPlatform</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -399,7 +497,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/Stress_Control/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Stress_Control</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Stress_Control/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Stress_Control</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -411,7 +509,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/bedrock_client/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/bedrock_client</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/bedrock_client/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/bedrock_client</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -423,7 +521,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/O.U.G.I/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/O.U.G.I</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/O.U.G.I/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/O.U.G.I</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -435,7 +533,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/Paperbox/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Paperbox</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Paperbox/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Paperbox</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -447,7 +545,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/apiron-lab.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/apiron-lab.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/apiron-lab.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/apiron-lab.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -459,7 +557,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/CSV-Escape-Sanitize</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/CSV-Escape-Sanitize</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -471,7 +569,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/Encoding-Repair/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Encoding-Repair</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/Encoding-Repair/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Encoding-Repair</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -483,7 +581,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/Universal-Token-Counter/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Universal-Token-Counter</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
+<tr><td class='colStatus'><span class='pill st-unknown'>(Unknown)</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/Universal-Token-Counter/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Universal-Token-Counter</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
