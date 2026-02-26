@@ -5,55 +5,329 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My-Manager Dashboard</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 24px; }
-    h1 { margin: 0 0 6px; }
-    .meta { color: #555; margin-bottom: 16px; }
-    .grid { display: grid; grid-template-columns: repeat(6, minmax(120px, 1fr)); gap: 12px; margin: 12px 0 18px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 12px; }
-    .k { color: #666; font-size: 12px; }
-    .v { font-size: 28px; font-weight: 700; }
-    .warn { border: 1px solid #ffb3b3; background: #fff3f3; border-radius: 12px; padding: 12px; margin: 16px 0; }
-    .ok { border: 1px solid #b8e0b8; background: #f3fff3; border-radius: 12px; padding: 12px; margin: 16px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th, td { border-bottom: 1px solid #eee; padding: 10px; vertical-align: top; }
-    th { text-align: left; color: #444; font-size: 12px; }
-    td { font-size: 13px; }
-    a { color: #0b5fff; text-decoration: none; }
+    :root {
+      --bg: #0b0f17;
+      --surface: #0f1624;
+      --surface2: #111b2d;
+      --border: rgba(255,255,255,.08);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.62);
+      --muted2: rgba(255,255,255,.48);
+
+      --inbox: #4f7cff;
+      --ready: #22c55e;
+      --doing: #a855f7;
+      --blocked: #ef4444;
+      --done: #38bdf8;
+      --unknown: #f59e0b;
+
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --r: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(79,124,255,.25), transparent 60%),
+                  radial-gradient(900px 600px at 90% 10%, rgba(168,85,247,.22), transparent 60%),
+                  radial-gradient(900px 600px at 50% 120%, rgba(34,197,94,.18), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 18px 48px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: linear-gradient(to bottom, rgba(11,15,23,.92), rgba(11,15,23,.70));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 18px;
+      margin: -26px -18px 18px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing: .2px;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .meta b { color: var(--text); font-weight: 700; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 14px 0 18px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius: var(--r);
+      padding: 12px 12px 10px;
+      box-shadow: var(--shadow);
+    }
+    .k {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+    .v {
+      font-size: 30px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    .c-inbox .v { color: var(--inbox); }
+    .c-ready .v { color: var(--ready); }
+    .c-doing .v { color: var(--doing); }
+    .c-blocked .v { color: var(--blocked); }
+    .c-done .v { color: var(--done); }
+    .c-unknown {
+      border-color: rgba(245,158,11,.35);
+      background: linear-gradient(180deg, rgba(245,158,11,.12), rgba(255,255,255,.02));
+    }
+    .c-unknown .v { color: var(--unknown); }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 14px 14px 12px;
+      margin: 14px 0 22px;
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.03);
+    }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      letter-spacing: .2px;
+    }
+    .panel p, .panel li {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .panel-warn {
+      border-color: rgba(239,68,68,.35);
+      background: linear-gradient(180deg, rgba(239,68,68,.12), rgba(255,255,255,.02));
+    }
+    .panel-ok {
+      border-color: rgba(34,197,94,.28);
+      background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(255,255,255,.02));
+    }
+
+    h2.section {
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    .group {
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      background: rgba(255,255,255,.02);
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    .groupSum {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 12px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text);
+    }
+    .groupSum::-webkit-details-marker { display: none; }
+
+    .groupName {
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .groupCount {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.15);
+    }
+
+    .tableWrap { padding: 0 10px 10px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 13px;
+    }
+    thead th {
+      position: sticky;
+      top: 78px; /* header height */
+      background: rgba(11,15,23,.92);
+      backdrop-filter: blur(8px);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      vertical-align: top;
+    }
+    tbody tr:hover {
+      background: rgba(255,255,255,.04);
+    }
+    .num { width: 60px; color: var(--muted); }
+    a {
+      color: rgba(130,180,255,.95);
+      text-decoration: none;
+    }
     a:hover { text-decoration: underline; }
-    .sub { color: #666; font-size: 12px; margin-top: 4px; }
-    .sm { color: #444; font-size: 12px; cursor: pointer; }
-    pre.body { white-space: pre-wrap; word-break: break-word; background: #f7f7f7; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
-    .st { width: 120px; }
-    .tp { width: 120px; }
-    .id { width: 60px; }
+
+    .sub {
+      color: var(--muted2);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.20);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .tp { color: rgba(255,255,255,.75); }
+
+    .st-inbox { border-color: rgba(79,124,255,.35); color: rgba(140,175,255,.95); }
+    .st-ready { border-color: rgba(34,197,94,.35); color: rgba(140,255,190,.95); }
+    .st-doing { border-color: rgba(168,85,247,.35); color: rgba(220,170,255,.95); }
+    .st-blocked { border-color: rgba(239,68,68,.40); color: rgba(255,170,170,.95); }
+    .st-done { border-color: rgba(56,189,248,.35); color: rgba(170,235,255,.95); }
+    .st-unknown { border-color: rgba(245,158,11,.40); color: rgba(255,215,140,.98); }
+
+    .details {
+      margin-top: 8px;
+    }
+    .details summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 12px;
+      user-select: none;
+      list-style: none;
+    }
+    .details summary::-webkit-details-marker { display: none; }
+    pre.body {
+      margin: 10px 0 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 10px;
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: repeat(3, minmax(120px, 1fr)); }
+      thead th { top: 104px; }
+    }
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      thead th { top: 118px; }
+    }
   </style>
 </head>
 <body>
-  <h1>My-Manager Dashboard</h1>
-  <div class="meta">
-    Generated: 2026-02-27 08:30 JST<br/>
-    Total (reported): 17 / Items: 17
-  </div>
+  <div class="wrap">
+    <header>
+      <h1>My-Manager Dashboard</h1>
+      <div class="meta">
+        Generated: <b>2026-02-27 08:36 JST</b><br/>
+        Total (reported): <b>17</b> / Items: <b>17</b>
+      </div>
+      <div class="grid">
+        <div class='card c-inbox'><div class='k'>Inbox</div><div class='v'>2</div></div><div class='card c-ready'><div class='k'>Ready</div><div class='v'>1</div></div><div class='card c-doing'><div class='k'>Doing</div><div class='v'>0</div></div><div class='card c-blocked'><div class='k'>Blocked</div><div class='v'>0</div></div><div class='card c-done'><div class='k'>Done</div><div class='v'>0</div></div><div class='card c-unknown'><div class='k'>Unknown</div><div class='v'>14</div></div>
+      </div>
+    </header>
 
-  <div class="grid">
-    <div class='card'><div class='k'>Inbox</div><div class='v'>2</div></div><div class='card'><div class='k'>Ready</div><div class='v'>1</div></div><div class='card'><div class='k'>Doing</div><div class='v'>0</div></div><div class='card'><div class='k'>Blocked</div><div class='v'>0</div></div><div class='card'><div class='k'>Done</div><div class='v'>0</div></div><div class='card'><div class='k'>(Unknown)</div><div class='v'>14</div></div>
-  </div>
+    <div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>
 
-  <div class='ok'><h2>Rule Violations</h2><p>なし</p></div>
-
-  <h2>Items</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Status</th><th>Type</th><th>#</th><th>Title</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class='st'>Inbox</td><td class='tp'>Decide</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/1' target='_blank'>[Decide] 全Repo運用の定義</a><div class='sub'>MariaCnightmare/My-Manager</div><details><summary class='sm'>本文</summary><pre class='body'>・台帳に入れる対象（Issue/PR/Draft）を決めた
+    <h2 class="section">Items</h2>
+    <details class="group" open>
+  <summary class="groupSum">
+    <span class="groupName">Inbox</span>
+    <span class="groupCount">2</span>
+  </summary>
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class='pill st-inbox'>Inbox</span></td><td><span class='pill tp'>Decide</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/1' target='_blank' rel='noopener noreferrer'>[Decide] 全Repo運用の定義</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'>・台帳に入れる対象（Issue/PR/Draft）を決めた
 ・“各RepoにIssue起票”か“My-Managerに集約”か決めた</pre></details></td></tr>
-<tr><td class='st'>Inbox</td><td class='tp'>Investigate</td><td class='id'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div><details><summary class='sm'>本文</summary><pre class='body'></pre></details></td></tr>
-<tr><td class='st'>Ready</td><td class='tp'>Implement</td><td class='id'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div><details><summary class='sm'>本文</summary><pre class='body'></pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/Andersen-Editor/issues/3' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Andersen-Editor</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-inbox'>Inbox</span></td><td><span class='pill tp'>Investigate</span></td><td class='num'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank' rel='noopener noreferrer'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'></pre></details></td></tr>
+      </tbody>
+    </table>
+  </div>
+</details>
+
+<details class="group" open>
+  <summary class="groupSum">
+    <span class="groupName">Ready</span>
+    <span class="groupCount">1</span>
+  </summary>
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class='pill st-ready'>Ready</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'></pre></details></td></tr>
+      </tbody>
+    </table>
+  </div>
+</details>
+
+<details class="group">
+  <summary class="groupSum">
+    <span class="groupName">(Unknown)</span>
+    <span class="groupCount">14</span>
+  </summary>
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>3</td><td class='tl'><a href='https://github.com/MariaCnightmare/Andersen-Editor/issues/3' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Andersen-Editor</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -65,7 +339,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/CheckMechanic/issues/2' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/CheckMechanic</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/CheckMechanic/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/CheckMechanic</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -77,7 +351,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/Fund-Link/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Fund-Link</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/Fund-Link/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Fund-Link</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -89,7 +363,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/MariaCnightmare.github.io</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/MariaCnightmare.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -101,7 +375,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>4</td><td class='tl'><a href='https://github.com/MariaCnightmare/PowerLayer/issues/4' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/PowerLayer</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>4</td><td class='tl'><a href='https://github.com/MariaCnightmare/PowerLayer/issues/4' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/PowerLayer</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -113,7 +387,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/ReportPlatform/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/ReportPlatform</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/ReportPlatform/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/ReportPlatform</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -125,7 +399,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/Stress_Control/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Stress_Control</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/Stress_Control/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Stress_Control</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -137,7 +411,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/bedrock_client/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/bedrock_client</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/bedrock_client/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/bedrock_client</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -149,7 +423,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/O.U.G.I/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/O.U.G.I</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/MariaCnightmare/O.U.G.I/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/O.U.G.I</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -161,7 +435,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/Paperbox/issues/2' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Paperbox</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>2</td><td class='tl'><a href='https://github.com/MariaCnightmare/Paperbox/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Paperbox</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -173,7 +447,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/APIron-lab/apiron-lab.github.io/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/apiron-lab.github.io</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/apiron-lab.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/apiron-lab.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -185,7 +459,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/CSV-Escape-Sanitize</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/CSV-Escape-Sanitize</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -197,7 +471,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/APIron-lab/Encoding-Repair/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Encoding-Repair</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/Encoding-Repair/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Encoding-Repair</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -209,7 +483,7 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='st'>(Unknown)</td><td class='tp'>Implement</td><td class='id'>1</td><td class='tl'><a href='https://github.com/APIron-lab/Universal-Token-Counter/issues/1' target='_blank'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Universal-Token-Counter</div><details><summary class='sm'>本文</summary><pre class='body'>## Goal
+<tr><td><span class='pill st-unknown'>(Unknown)</span></td><td><span class='pill tp'>Implement</span></td><td class='num'>1</td><td class='tl'><a href='https://github.com/APIron-lab/Universal-Token-Counter/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Universal-Token-Counter</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
 ## Checklist
@@ -221,7 +495,10 @@ Create a baseline inventory record for this repository.
 
 ## Output
 - [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
+</details>
+  </div>
 </body>
 </html>
