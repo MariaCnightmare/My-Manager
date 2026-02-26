@@ -33,6 +33,7 @@ SSH_RE = re.compile(r"^git@github\.com:([^/]+)/([^/]+?)(?:\.git)?$")
 
 EXCLUDED_REPOS = {
     "mariacnightmare/my-manager",
+    "apiron-lab/apiron-lab",
 }
 
 
@@ -96,25 +97,15 @@ def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
     """
     Ensure P2 label exists.
 
-    NOTE:
-    We intentionally use `gh api` instead of `gh label` because some environments
-    observed `gh label list/create` returning 404 even when REST labels endpoint works.
+    Use `gh api` with explicit query string for GET to avoid CLI argument quirks.
     """
-    # --- list labels via REST (paginate defensively) ---
+    print(f"[DBG] labels api target: repos/{owner}/{repo}/labels")
+
     labels: List[dict] = []
     page = 1
     while True:
-        code, out, err = run_cmd(
-            [
-                "gh",
-                "api",
-                f"repos/{owner}/{repo}/labels",
-                "-f",
-                "per_page=100",
-                "-f",
-                f"page={page}",
-            ]
-        )
+        endpoint = f"repos/{owner}/{repo}/labels?per_page=100&page={page}"
+        code, out, err = run_cmd(["gh", "api", endpoint])
         if code != 0:
             if is_permission_error(err):
                 return False, f"skip: cannot read labels ({err or 'unknown error'})"
@@ -132,7 +123,7 @@ def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
         if len(batch) < 100:
             break
         page += 1
-        if page > 10:  # safety
+        if page > 10:
             break
 
     if any((it.get("name") == P2_LABEL) for it in labels):
@@ -141,7 +132,6 @@ def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
     if dry_run:
         return True, f"dry-run: would create label {P2_LABEL}"
 
-    # --- create label via REST ---
     code, out, err = run_cmd(
         [
             "gh",
@@ -158,7 +148,6 @@ def ensure_label(owner: str, repo: str, dry_run: bool) -> Tuple[bool, str]:
         ]
     )
     if code != 0:
-        # If already exists (race), treat as success
         if "already exists" in (err or "").lower():
             return True, "label already exists"
         if is_permission_error(err):
