@@ -4,20 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My-Manager Dashboard</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      try {
-        if (window.mermaid) {
-          mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
-        }
-      } catch (e) {
-        // keep plain text if mermaid fails
-      }
-    });
-  </script>
-
   <style>
     :root {
       --bg: #0b0f17;
@@ -180,16 +166,6 @@
       color: var(--text);
     }
 
-    /* Mermaid block */
-    .mermaid {
-      background: rgba(0,0,0,.20);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: var(--r);
-      padding: 10px;
-      overflow-x: auto;
-    }
-
-    /* Repo summary */
     .repoTable {
       width: 100%;
       border-collapse: collapse;
@@ -207,11 +183,11 @@
       text-align: left;
     }
     .repoCol {
-      width: 34%;
+      width: 38%;
       word-break: break-word;
     }
     .barCol {
-      width: 66%;
+      width: 62%;
     }
     .stack {
       height: 10px;
@@ -248,61 +224,6 @@
       color: rgba(255,215,140,.95);
     }
 
-    .metaLine {
-      margin-top: 10px;
-      color: rgba(255,255,255,.75);
-      font-size: 12px;
-    }
-    .muted { color: var(--muted); }
-
-    .chips {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .chip {
-      font-size: 11px;
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 999px;
-      padding: 3px 8px;
-      background: rgba(0,0,0,.16);
-      color: rgba(255,255,255,.74);
-      white-space: nowrap;
-    }
-    .age {
-      margin-left: 4px;
-      font-weight: 900;
-      padding: 1px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-    }
-    .age.ok { color: rgba(140,255,190,.95); border-color: rgba(34,197,94,.35); }
-    .age.good { color: rgba(170,235,255,.95); border-color: rgba(56,189,248,.35); }
-    .age.warn { color: rgba(255,215,140,.95); border-color: rgba(245,158,11,.35); }
-    .age.bad { color: rgba(255,170,170,.95); border-color: rgba(239,68,68,.35); }
-
-    .linksRow {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .sbtn {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-      color: rgba(255,255,255,.75);
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 900;
-    }
-    .sbtn:hover { background: rgba(255,255,255,.06); }
-
-    /* Groups / Items */
     .group {
       border: 1px solid var(--border);
       border-radius: var(--r);
@@ -443,7 +364,7 @@
     <header>
       <h1>My-Manager Dashboard</h1>
       <div class="meta">
-        Generated: <b>2026-02-27 23:56 JST</b><br/>
+        Generated: <b>2026-02-28 00:03 JST</b><br/>
         Total (reported): <b>17</b> / Items: <b>17</b>
       </div>
 
@@ -460,41 +381,28 @@
       </div>
     </header>
 
-    <div class="panel">
-      <h2>Flow</h2>
-      <div class="mermaid">flowchart LR
-  A[Work in repositories] --&gt; B[Create / update Issues]
-  B --&gt; C[Add to Project v2]
-  C --&gt; D[Run &quot;Update Dashboard&quot; (Actions)]
-  D --&gt; E[Collect: Project items + Repo meta]
-  E --&gt; F[Generate docs/index.html]
-  F --&gt; G[GitHub Pages publish]
-  G --&gt; H[Review &amp; set Status / Next]
-  H --&gt; C</div>
-    </div>
-
     <div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>
 
     <h2 class="section">Repositories</h2>
     <div class="panel">
       <table class="repoTable">
-        <thead><tr><th>Repository</th><th>Status / Branch activity / Links</th></tr></thead>
+        <thead><tr><th>Repository</th><th>Status composition</th></tr></thead>
         <tbody>
-          <tr><td class='repoCol'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize' target='_blank' rel='noopener noreferrer'>APIron-lab/CSV-Escape-Sanitize</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age bad'>70d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 1)</span></div><div class='chips'><span class='chip'>main <span class='age bad'>70d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/APIron-lab/CSV-Escape-Sanitize/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/APIron-lab/CSV-Escape-Sanitize/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/APIron-lab/CSV-Escape-Sanitize/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/APIron-lab/CSV-Escape-Sanitize/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/APIron-lab/Encoding-Repair' target='_blank' rel='noopener noreferrer'>APIron-lab/Encoding-Repair</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age bad'>85d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 1)</span></div><div class='chips'><span class='chip'>main <span class='age bad'>85d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/APIron-lab/Encoding-Repair/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/APIron-lab/Encoding-Repair/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/APIron-lab/Encoding-Repair/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/APIron-lab/Encoding-Repair/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/APIron-lab/Universal-Token-Counter' target='_blank' rel='noopener noreferrer'>APIron-lab/Universal-Token-Counter</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age bad'>95d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 1)</span></div><div class='chips'><span class='chip'>main <span class='age bad'>95d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/APIron-lab/Universal-Token-Counter/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/APIron-lab/Universal-Token-Counter/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/APIron-lab/Universal-Token-Counter/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/APIron-lab/Universal-Token-Counter/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/APIron-lab/apiron-lab.github.io' target='_blank' rel='noopener noreferrer'>APIron-lab/apiron-lab.github.io</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age bad'>85d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 1)</span></div><div class='chips'><span class='chip'>main <span class='age bad'>85d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/APIron-lab/apiron-lab.github.io/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/APIron-lab/apiron-lab.github.io/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/APIron-lab/apiron-lab.github.io/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/APIron-lab/apiron-lab.github.io/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Andersen-Editor' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Andersen-Editor</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age good'>3d</span> / default: <b>develop</b></div><div class='metaLine'><span class='muted'>branches</span> <b>4</b><span class='muted'> (sample 4, active≤7d 2, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>develop <span class='age good'>3d</span></span><span class='chip'>feat/pro-unlock-iap <span class='age good'>4d</span></span><span class='chip'>fix/export-and-header-polish <span class='age warn'>12d</span></span><span class='chip'>pages-site <span class='age warn'>11d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/Andersen-Editor/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/Andersen-Editor/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/Andersen-Editor/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/Andersen-Editor/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/CheckMechanic' target='_blank' rel='noopener noreferrer'>MariaCnightmare/CheckMechanic</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age good'>5d</span> / default: <b>feat/bootstrap</b></div><div class='metaLine'><span class='muted'>branches</span> <b>3</b><span class='muted'> (sample 3, active≤7d 2, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>feat/bootstrap <span class='age good'>5d</span></span><span class='chip'>feat/consent-token <span class='age warn'>9d</span></span><span class='chip'>feat/ui-polish-v2 <span class='age good'>5d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/CheckMechanic/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/CheckMechanic/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/CheckMechanic/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/CheckMechanic/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Fund-Link' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Fund-Link</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age warn'>10d</span> / default: <b>feat/bootstrap</b></div><div class='metaLine'><span class='muted'>branches</span> <b>2</b><span class='muted'> (sample 2, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>feat/bootstrap <span class='age warn'>11d</span></span><span class='chip'>main <span class='age warn'>10d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/Fund-Link/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/Fund-Link/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/Fund-Link/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/Fund-Link/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io' target='_blank' rel='noopener noreferrer'>MariaCnightmare/MariaCnightmare.github.io</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age ok'>0d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 1, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age ok'>0d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/O.U.G.I' target='_blank' rel='noopener noreferrer'>MariaCnightmare/O.U.G.I</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age good'>3d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>0</b><span class='muted'> (sample 0, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='muted'>branches: n/a</span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/O.U.G.I/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/O.U.G.I/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/O.U.G.I/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/O.U.G.I/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Paperbox' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Paperbox</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age warn'>20d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age warn'>20d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/Paperbox/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/Paperbox/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/Paperbox/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/Paperbox/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/PowerLayer' target='_blank' rel='noopener noreferrer'>MariaCnightmare/PowerLayer</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age warn'>16d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>2</b><span class='muted'> (sample 2, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age warn'>16d</span></span><span class='chip'>feature/ui-group-centric <span class='age warn'>16d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/PowerLayer/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/PowerLayer/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/PowerLayer/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/PowerLayer/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/ReportPlatform' target='_blank' rel='noopener noreferrer'>MariaCnightmare/ReportPlatform</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age warn'>9d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age warn'>9d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/ReportPlatform/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/ReportPlatform/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/ReportPlatform/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/ReportPlatform/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Stress_Control' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Stress_Control</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age warn'>18d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age warn'>18d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/Stress_Control/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/Stress_Control/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/Stress_Control/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/Stress_Control/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/bedrock_client' target='_blank' rel='noopener noreferrer'>MariaCnightmare/bedrock_client</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div><div class='metaLine'>Last push: <span class='age warn'>9d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 0, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age warn'>9d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/bedrock_client/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/bedrock_client/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/bedrock_client/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/bedrock_client/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
-<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/My-Manager' target='_blank' rel='noopener noreferrer'>MariaCnightmare/My-Manager</a><div class='sub small'>items: 3</div></td><td class='barCol'><div class='stack'><span class='seg inbox' style='width:66.6667%'></span><span class='seg ready' style='width:33.3333%'></span></div><div class='badges'><span class='mini'>I:2</span><span class='mini'>R:1</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:0</span></div><div class='metaLine'>Last push: <span class='age ok'>0d</span> / default: <b>main</b></div><div class='metaLine'><span class='muted'>branches</span> <b>1</b><span class='muted'> (sample 1, active≤7d 1, stale&gt;30d 0)</span></div><div class='chips'><span class='chip'>main <span class='age ok'>0d</span></span></div><div class='linksRow'><a class='sbtn' href='https://github.com/MariaCnightmare/My-Manager/branches' target='_blank' rel='noopener noreferrer'>Branches</a><a class='sbtn' href='https://github.com/MariaCnightmare/My-Manager/pulls' target='_blank' rel='noopener noreferrer'>PR</a><a class='sbtn' href='https://github.com/MariaCnightmare/My-Manager/actions' target='_blank' rel='noopener noreferrer'>Actions</a><a class='sbtn' href='https://github.com/MariaCnightmare/My-Manager/network' target='_blank' rel='noopener noreferrer'>Network</a></div></td></tr>
+          <tr><td class='repoCol'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize' target='_blank' rel='noopener noreferrer'>APIron-lab/CSV-Escape-Sanitize</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/Encoding-Repair' target='_blank' rel='noopener noreferrer'>APIron-lab/Encoding-Repair</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/Universal-Token-Counter' target='_blank' rel='noopener noreferrer'>APIron-lab/Universal-Token-Counter</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/APIron-lab/apiron-lab.github.io' target='_blank' rel='noopener noreferrer'>APIron-lab/apiron-lab.github.io</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Andersen-Editor' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Andersen-Editor</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/CheckMechanic' target='_blank' rel='noopener noreferrer'>MariaCnightmare/CheckMechanic</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Fund-Link' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Fund-Link</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io' target='_blank' rel='noopener noreferrer'>MariaCnightmare/MariaCnightmare.github.io</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/O.U.G.I' target='_blank' rel='noopener noreferrer'>MariaCnightmare/O.U.G.I</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Paperbox' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Paperbox</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/PowerLayer' target='_blank' rel='noopener noreferrer'>MariaCnightmare/PowerLayer</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/ReportPlatform' target='_blank' rel='noopener noreferrer'>MariaCnightmare/ReportPlatform</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/Stress_Control' target='_blank' rel='noopener noreferrer'>MariaCnightmare/Stress_Control</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/bedrock_client' target='_blank' rel='noopener noreferrer'>MariaCnightmare/bedrock_client</a><div class='sub small'>items: 1</div></td><td class='barCol'><div class='stack'><span class='seg unknown' style='width:100.0000%'></span></div><div class='badges'><span class='mini'>I:0</span><span class='mini'>R:0</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:1</span></div></td></tr>
+<tr><td class='repoCol'><a href='https://github.com/MariaCnightmare/My-Manager' target='_blank' rel='noopener noreferrer'>MariaCnightmare/My-Manager</a><div class='sub small'>items: 3</div></td><td class='barCol'><div class='stack'><span class='seg inbox' style='width:66.6667%'></span><span class='seg ready' style='width:33.3333%'></span></div><div class='badges'><span class='mini'>I:2</span><span class='mini'>R:1</span><span class='mini'>Dg:0</span><span class='mini'>Bl:0</span><span class='mini'>Dn:0</span><span class='mini warn'>U:0</span></div></td></tr>
         </tbody>
       </table>
     </div>
