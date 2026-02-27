@@ -5,6 +5,8 @@
 ## 出力フォーマット（厳守）
 以下のMarkdownのみを出力してください（前後に説明文不要）。
 
+出力はMarkdownのみ。先頭に箇条書き記号（•）は付けない。
+
 ## Inventory Summary (AUTO)
 
 ### Classification
@@ -37,4 +39,4 @@
 - Signals:
   - Unknown items count: <int>
   - Blocked items count: <int> (Next missing: <int>)
-  - Doing items count: <int>
+  - Doing items count: <inti>
