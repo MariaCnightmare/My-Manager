@@ -17,10 +17,24 @@ RE_TASK_TYPE = re.compile(r"^\[(Investigate|Decide|Implement|Verify)\]\s*", re.I
 RE_NEXT = re.compile(r"^⏭\s*Next:", re.MULTILINE)
 RE_P1 = re.compile(r"\bP1\b", re.IGNORECASE)
 
+# === Quick Links (update if you change project number/repo) ===
+PROJECT_V2_URL = "https://github.com/users/MariaCnightmare/projects/1"
+ACTIONS_WORKFLOW_URL = "https://github.com/MariaCnightmare/My-Manager/actions/workflows/dashboard.yml"
+REPO_URL = "https://github.com/MariaCnightmare/My-Manager"
+ISSUES_URL = "https://github.com/MariaCnightmare/My-Manager/issues"
+
 
 def read_json(path: str) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def try_read_json(path: str) -> Dict[str, Any]:
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
 
 def esc(s: str) -> str:
@@ -62,12 +76,6 @@ def build_counts(items: List[Dict[str, Any]]) -> Dict[str, int]:
 def repo_key(it: Dict[str, Any]) -> str:
     c = it.get("content") or {}
     return (c.get("repository") or it.get("repository") or "").strip()
-
-
-def repo_url(repo_full: str) -> str:
-    if not repo_full:
-        return ""
-    return f"https://github.com/{repo_full}"
 
 
 def violations(items: List[Dict[str, Any]]) -> List[str]:
@@ -127,7 +135,6 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
             "Done": "st-done",
         }.get(st, "st-unknown")
 
-        # detailsは本文があるときだけ表示
         details_html = ""
         if body:
             details_html = (
@@ -179,7 +186,6 @@ def render_group(items: List[Dict[str, Any]], status: str, default_open: bool) -
 
 
 def build_repo_summary(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    # repo -> status -> count
     acc: Dict[str, Dict[str, int]] = {}
     for it in items:
         rk = repo_key(it) or "(unknown repo)"
@@ -194,12 +200,46 @@ def build_repo_summary(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         total = sum(m.values())
         out.append({"repo": rk, "counts": m, "total": total})
 
-    # sort: total desc
-    out.sort(key=lambda x: (-int(x["total"]), x["repo"]))
+    # “一目”優先: Unknown → Blocked → Doing → total
+    out.sort(
+        key=lambda x: (
+            -int(x["counts"].get("(Unknown)", 0)),
+            -int(x["counts"].get("Blocked", 0)),
+            -int(x["counts"].get("Doing", 0)),
+            -int(x["total"]),
+            x["repo"],
+        )
+    )
     return out
 
 
-def render_repo_rows(repo_summ: List[Dict[str, Any]]) -> str:
+def age_badge(days: Any) -> str:
+    if not isinstance(days, int):
+        return "?"
+    if days <= 2:
+        return f"<span class='age ok'>{days}d</span>"
+    if days <= 7:
+        return f"<span class='age good'>{days}d</span>"
+    if days <= 30:
+        return f"<span class='age warn'>{days}d</span>"
+    return f"<span class='age bad'>{days}d</span>"
+
+
+def render_branch_chips(repo_meta: Dict[str, Any]) -> str:
+    b = (repo_meta.get("branches") or {}).get("items") or []
+    if not isinstance(b, list) or not b:
+        return "<span class='muted'>branches: n/a</span>"
+    chips = []
+    for bi in b[:6]:
+        name = (bi.get("name") or "").strip()
+        ad = bi.get("age_days")
+        if not name:
+            continue
+        chips.append(f"<span class='chip'>{esc(name)} {age_badge(ad)}</span>")
+    return "".join(chips) if chips else "<span class='muted'>branches: n/a</span>"
+
+
+def render_repo_rows(repo_summ: List[Dict[str, Any]], repos_meta: Dict[str, Any]) -> str:
     seg_keys = ["Inbox", "Ready", "Doing", "Blocked", "Done", "(Unknown)"]
     seg_class = {
         "Inbox": "seg inbox",
@@ -210,13 +250,15 @@ def render_repo_rows(repo_summ: List[Dict[str, Any]]) -> str:
         "(Unknown)": "seg unknown",
     }
 
+    repos_map = (repos_meta.get("repos") or {}) if isinstance(repos_meta, dict) else {}
+
     rows = []
     for r in repo_summ:
         repo = r["repo"]
         total = int(r["total"])
         counts: Dict[str, int] = r["counts"]
 
-        # stacked bar widths in %
+        # stacked status bar
         segs = []
         for k in seg_keys:
             n = int(counts.get(k, 0))
@@ -224,16 +266,14 @@ def render_repo_rows(repo_summ: List[Dict[str, Any]]) -> str:
                 continue
             w = (n / total) * 100.0
             segs.append(f"<span class='{seg_class[k]}' style='width:{w:.4f}%'></span>")
-
         bar = "<div class='stack'>" + "".join(segs) + "</div>" if segs else "<div class='stack'></div>"
 
-        # repo link if looks like owner/name
-        link = repo_url(repo) if "/" in repo and " " not in repo else ""
+        # repo link
+        link = f"https://github.com/{repo}" if "/" in repo and " " not in repo else ""
         repo_html = esc(repo)
         if link:
             repo_html = f"<a href='{esc(link)}' target='_blank' rel='noopener noreferrer'>{esc(repo)}</a>"
 
-        # compact counts
         badge = (
             f"<span class='mini'>I:{counts.get('Inbox',0)}</span>"
             f"<span class='mini'>R:{counts.get('Ready',0)}</span>"
@@ -243,12 +283,61 @@ def render_repo_rows(repo_summ: List[Dict[str, Any]]) -> str:
             f"<span class='mini warn'>U:{counts.get('(Unknown)',0)}</span>"
         )
 
+        meta = repos_map.get(repo) or {}
+        pushed_age = meta.get("pushed_age_days")
+        default_branch = meta.get("default_branch") or "?"
+        branches_total = (meta.get("branches") or {}).get("total")
+        branches_sampled = (meta.get("branches") or {}).get("sampled")
+        active7 = (meta.get("branches") or {}).get("active_7d")
+        stale30 = (meta.get("branches") or {}).get("stale_30d")
+
+        push_line = ""
+        if isinstance(pushed_age, int):
+            push_line = f"Last push: {age_badge(pushed_age)} / default: <b>{esc(default_branch)}</b>"
+        else:
+            push_line = "Last push: <span class='muted'>n/a</span>"
+
+        branch_line = ""
+        if isinstance(branches_total, int):
+            branch_line = (
+                f"<span class='muted'>branches</span> "
+                f"<b>{branches_total}</b>"
+                f"<span class='muted'> (sample {branches_sampled or 0}, active≤7d {active7 or 0}, stale&gt;30d {stale30 or 0})</span>"
+            )
+        else:
+            branch_line = "<span class='muted'>branches: n/a</span>"
+
+        chips = render_branch_chips(meta)
+
+        links = meta.get("links") or {}
+        br = links.get("branches") or (f"https://github.com/{repo}/branches" if link else "")
+        pr = links.get("pulls") or (f"https://github.com/{repo}/pulls" if link else "")
+        ac = links.get("actions") or (f"https://github.com/{repo}/actions" if link else "")
+        nw = links.get("network") or (f"https://github.com/{repo}/network" if link else "")
+
+        links_html = ""
+        if link:
+            links_html = (
+                f"<a class='sbtn' href='{esc(br)}' target='_blank' rel='noopener noreferrer'>Branches</a>"
+                f"<a class='sbtn' href='{esc(pr)}' target='_blank' rel='noopener noreferrer'>PR</a>"
+                f"<a class='sbtn' href='{esc(ac)}' target='_blank' rel='noopener noreferrer'>Actions</a>"
+                f"<a class='sbtn' href='{esc(nw)}' target='_blank' rel='noopener noreferrer'>Network</a>"
+            )
+
         rows.append(
             "<tr>"
             f"<td class='repoCol'>{repo_html}<div class='sub small'>items: {total}</div></td>"
-            f"<td class='barCol'>{bar}<div class='badges'>{badge}</div></td>"
+            f"<td class='barCol'>"
+            f"{bar}"
+            f"<div class='badges'>{badge}</div>"
+            f"<div class='metaLine'>{push_line}</div>"
+            f"<div class='metaLine'>{branch_line}</div>"
+            f"<div class='chips'>{chips}</div>"
+            f"<div class='linksRow'>{links_html}</div>"
+            "</td>"
             "</tr>"
         )
+
     return "\n".join(rows)
 
 
@@ -261,6 +350,8 @@ def main() -> None:
     items_sorted = sort_items(items)
     counts = build_counts(items_sorted)
     v = violations(items_sorted)
+
+    repos_meta = try_read_json("data/repos_meta.json")
 
     cards_spec = [
         ("Inbox", "Inbox", "c-inbox"),
@@ -285,18 +376,30 @@ def main() -> None:
     else:
         v_html = "<div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>"
 
-    # Repo summary
     repo_summ = build_repo_summary(items_sorted)
-    repo_rows = render_repo_rows(repo_summ)
+    repo_rows = render_repo_rows(repo_summ, repos_meta)
 
-    groups = []
-    groups.append(render_group(items_sorted, "Inbox", True))
-    groups.append(render_group(items_sorted, "Ready", True))
-    groups.append(render_group(items_sorted, "Doing", True))
-    groups.append(render_group(items_sorted, "Blocked", True))
-    groups.append(render_group(items_sorted, "Done", False))
-    groups.append(render_group(items_sorted, "(Unknown)", False))
+    groups = [
+        render_group(items_sorted, "Inbox", True),
+        render_group(items_sorted, "Ready", True),
+        render_group(items_sorted, "Doing", True),
+        render_group(items_sorted, "Blocked", True),
+        render_group(items_sorted, "Done", False),
+        render_group(items_sorted, "(Unknown)", False),
+    ]
     groups_html = "\n\n".join(g for g in groups if g)
+
+    mermaid_flow = r"""
+flowchart LR
+  A[Work in repositories] --> B[Create / update Issues]
+  B --> C[Add to Project v2]
+  C --> D[Run "Update Dashboard" (Actions)]
+  D --> E[Collect: Project items + Repo meta]
+  E --> F[Generate docs/index.html]
+  F --> G[GitHub Pages publish]
+  G --> H[Review & set Status / Next]
+  H --> C
+""".strip()
 
     html = f"""<!doctype html>
 <html lang="ja">
@@ -304,11 +407,23 @@ def main() -> None:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My-Manager Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {{
+      try {{
+        if (window.mermaid) {{
+          mermaid.initialize({{ startOnLoad: true, theme: 'dark', securityLevel: 'loose' }});
+        }}
+      }} catch (e) {{
+        // keep plain text if mermaid fails
+      }}
+    }});
+  </script>
+
   <style>
     :root {{
       --bg: #0b0f17;
-      --surface: #0f1624;
-      --surface2: #111b2d;
       --border: rgba(255,255,255,.08);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.62);
@@ -363,7 +478,41 @@ def main() -> None:
       font-size: 13px;
       line-height: 1.45;
     }}
-    .meta b {{ color: var(--text); font-weight: 800; }}
+    .meta b {{ color: var(--text); font-weight: 900; }}
+
+    .links {{
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }}
+    .btn {{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.80);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+    }}
+    .btn:hover {{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.18);
+    }}
+    .btn.primary {{
+      border-color: rgba(79,124,255,.35);
+      color: rgba(170,200,255,.95);
+    }}
+    .hint {{
+      color: var(--muted2);
+      font-size: 12px;
+      margin-left: 6px;
+    }}
 
     .grid {{
       display: grid;
@@ -434,6 +583,15 @@ def main() -> None:
       color: var(--text);
     }}
 
+    /* Mermaid block */
+    .mermaid {{
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--r);
+      padding: 10px;
+      overflow-x: auto;
+    }}
+
     /* Repo summary */
     .repoTable {{
       width: 100%;
@@ -448,15 +606,15 @@ def main() -> None:
     .repoTable th {{
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       text-align: left;
     }}
     .repoCol {{
-      width: 38%;
+      width: 34%;
       word-break: break-word;
     }}
     .barCol {{
-      width: 62%;
+      width: 66%;
     }}
     .stack {{
       height: 10px;
@@ -493,7 +651,61 @@ def main() -> None:
       color: rgba(255,215,140,.95);
     }}
 
-    /* Groups */
+    .metaLine {{
+      margin-top: 10px;
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+    }}
+    .muted {{ color: var(--muted); }}
+
+    .chips {{
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }}
+    .chip {{
+      font-size: 11px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: rgba(0,0,0,.16);
+      color: rgba(255,255,255,.74);
+      white-space: nowrap;
+    }}
+    .age {{
+      margin-left: 4px;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+    }}
+    .age.ok {{ color: rgba(140,255,190,.95); border-color: rgba(34,197,94,.35); }}
+    .age.good {{ color: rgba(170,235,255,.95); border-color: rgba(56,189,248,.35); }}
+    .age.warn {{ color: rgba(255,215,140,.95); border-color: rgba(245,158,11,.35); }}
+    .age.bad {{ color: rgba(255,170,170,.95); border-color: rgba(239,68,68,.35); }}
+
+    .linksRow {{
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }}
+    .sbtn {{
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+    }}
+    .sbtn:hover {{ background: rgba(255,255,255,.06); }}
+
+    /* Groups / Items */
     .group {{
       border: 1px solid var(--border);
       border-radius: var(--r);
@@ -516,7 +728,7 @@ def main() -> None:
     .groupName {{ font-weight: 900; letter-spacing: .2px; }}
     .groupCount {{
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 900;
       font-size: 12px;
       padding: 4px 10px;
       border-radius: 999px;
@@ -526,7 +738,6 @@ def main() -> None:
 
     .tableWrap {{ padding: 0 10px 10px; }}
 
-    /* Items table: stabilize layout (no sticky headers to avoid overlap) */
     .itemsTable {{
       width: 100%;
       border-collapse: collapse;
@@ -538,7 +749,7 @@ def main() -> None:
       background: rgba(0,0,0,.18);
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       text-align: left;
       padding: 10px 10px;
       border-bottom: 1px solid var(--border);
@@ -553,11 +764,7 @@ def main() -> None:
     .colStatus {{ width: 120px; }}
     .colType {{ width: 120px; }}
     .colNum {{ width: 60px; color: var(--muted); }}
-    .colTitle {{
-      width: auto;
-      overflow: hidden;
-      word-break: break-word;
-    }}
+    .colTitle {{ width: auto; overflow: hidden; word-break: break-word; }}
 
     a {{
       color: rgba(130,180,255,.95);
@@ -570,10 +777,7 @@ def main() -> None:
       font-size: 12px;
       margin-top: 6px;
     }}
-    .sub.small {{
-      margin-top: 6px;
-      font-size: 11px;
-    }}
+    .sub.small {{ margin-top: 6px; font-size: 11px; }}
 
     .pill {{
       display: inline-flex;
@@ -583,7 +787,7 @@ def main() -> None:
       border: 1px solid var(--border);
       background: rgba(0,0,0,.20);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--muted);
       white-space: nowrap;
     }}
@@ -596,9 +800,7 @@ def main() -> None:
     .st-done {{ border-color: rgba(56,189,248,.35); color: rgba(170,235,255,.95); }}
     .st-unknown {{ border-color: rgba(245,158,11,.40); color: rgba(255,215,140,.98); }}
 
-    .details {{
-      margin-top: 10px;
-    }}
+    .details {{ margin-top: 10px; }}
     .details summary {{
       cursor: pointer;
       color: var(--muted);
@@ -635,6 +837,7 @@ def main() -> None:
     @media (max-width: 560px) {{
       .grid {{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }}
       .repoCol, .barCol {{ width: auto; }}
+      .hint {{ display: none; }}
     }}
   </style>
 </head>
@@ -646,17 +849,31 @@ def main() -> None:
         Generated: <b>{esc(now_jst_str(gen_ts))}</b><br/>
         Total (reported): <b>{total}</b> / Items: <b>{len(items_sorted)}</b>
       </div>
+
+      <div class="links">
+        <a class="btn primary" href="{esc(ACTIONS_WORKFLOW_URL)}" target="_blank" rel="noopener noreferrer">更新（Actions）</a>
+        <a class="btn" href="{esc(PROJECT_V2_URL)}" target="_blank" rel="noopener noreferrer">Project Board</a>
+        <a class="btn" href="{esc(ISSUES_URL)}" target="_blank" rel="noopener noreferrer">Issues</a>
+        <a class="btn" href="{esc(REPO_URL)}" target="_blank" rel="noopener noreferrer">Repo</a>
+        <span class="hint">※ 更新は Actions → Run workflow</span>
+      </div>
+
       <div class="grid">
         {''.join(cards_html)}
       </div>
     </header>
+
+    <div class="panel">
+      <h2>Flow</h2>
+      <div class="mermaid">{esc(mermaid_flow)}</div>
+    </div>
 
     {v_html}
 
     <h2 class="section">Repositories</h2>
     <div class="panel">
       <table class="repoTable">
-        <thead><tr><th>Repository</th><th>Status composition</th></tr></thead>
+        <thead><tr><th>Repository</th><th>Status / Branch activity / Links</th></tr></thead>
         <tbody>
           {repo_rows}
         </tbody>

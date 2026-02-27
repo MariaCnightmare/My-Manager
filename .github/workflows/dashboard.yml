@@ -36,6 +36,12 @@ jobs:
           chmod +x scripts/collect_project.sh
           scripts/collect_project.sh
 
+      - name: Collect repo meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/collect_repo_meta.py --project-items data/project_items.json --out data/repos_meta.json --max-branches 8
+
       - name: Build dashboard
         run: |
           python3 scripts/build_dashboard.py
