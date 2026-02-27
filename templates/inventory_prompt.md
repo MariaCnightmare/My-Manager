@@ -39,4 +39,4 @@
 - Signals:
   - Unknown items count: <int>
   - Blocked items count: <int> (Next missing: <int>)
-  - Doing items count: <inti>
+  - Doing items count: <int>
