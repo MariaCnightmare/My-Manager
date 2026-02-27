@@ -1,0 +1,449 @@
+{
+  "generated_at": "2026-02-27T17:39:46.338481+00:00",
+  "repos": {
+    "APIron-lab/CSV-Escape-Sanitize": {
+      "repo": "APIron-lab/CSV-Escape-Sanitize",
+      "default_branch": "main",
+      "pushed_at": "2025-12-18T17:40:43Z",
+      "pushed_age_days": 70,
+      "html_url": "https://github.com/APIron-lab/CSV-Escape-Sanitize",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 1,
+        "items": [
+          {
+            "name": "main",
+            "sha": "0a50bd1363d7",
+            "date": "2025-12-18T17:40:26+00:00",
+            "age_days": 70
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/APIron-lab/CSV-Escape-Sanitize/branches",
+        "pulls": "https://github.com/APIron-lab/CSV-Escape-Sanitize/pulls",
+        "actions": "https://github.com/APIron-lab/CSV-Escape-Sanitize/actions",
+        "network": "https://github.com/APIron-lab/CSV-Escape-Sanitize/network"
+      }
+    },
+    "APIron-lab/Encoding-Repair": {
+      "repo": "APIron-lab/Encoding-Repair",
+      "default_branch": "main",
+      "pushed_at": "2025-12-03T18:08:54Z",
+      "pushed_age_days": 85,
+      "html_url": "https://github.com/APIron-lab/Encoding-Repair",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 1,
+        "items": [
+          {
+            "name": "main",
+            "sha": "870ec8b53b16",
+            "date": "2025-12-03T18:08:50+00:00",
+            "age_days": 85
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/APIron-lab/Encoding-Repair/branches",
+        "pulls": "https://github.com/APIron-lab/Encoding-Repair/pulls",
+        "actions": "https://github.com/APIron-lab/Encoding-Repair/actions",
+        "network": "https://github.com/APIron-lab/Encoding-Repair/network"
+      }
+    },
+    "APIron-lab/Universal-Token-Counter": {
+      "repo": "APIron-lab/Universal-Token-Counter",
+      "default_branch": "main",
+      "pushed_at": "2025-11-23T16:22:19Z",
+      "pushed_age_days": 96,
+      "html_url": "https://github.com/APIron-lab/Universal-Token-Counter",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 1,
+        "items": [
+          {
+            "name": "main",
+            "sha": "6bb42dfa8e6c",
+            "date": "2025-11-23T16:21:08+00:00",
+            "age_days": 96
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/APIron-lab/Universal-Token-Counter/branches",
+        "pulls": "https://github.com/APIron-lab/Universal-Token-Counter/pulls",
+        "actions": "https://github.com/APIron-lab/Universal-Token-Counter/actions",
+        "network": "https://github.com/APIron-lab/Universal-Token-Counter/network"
+      }
+    },
+    "APIron-lab/apiron-lab.github.io": {
+      "repo": "APIron-lab/apiron-lab.github.io",
+      "default_branch": "main",
+      "pushed_at": "2025-12-04T12:52:47Z",
+      "pushed_age_days": 85,
+      "html_url": "https://github.com/APIron-lab/apiron-lab.github.io",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 1,
+        "items": [
+          {
+            "name": "main",
+            "sha": "d0ae72786ec7",
+            "date": "2025-12-04T12:52:41+00:00",
+            "age_days": 85
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/APIron-lab/apiron-lab.github.io/branches",
+        "pulls": "https://github.com/APIron-lab/apiron-lab.github.io/pulls",
+        "actions": "https://github.com/APIron-lab/apiron-lab.github.io/actions",
+        "network": "https://github.com/APIron-lab/apiron-lab.github.io/network"
+      }
+    },
+    "MariaCnightmare/Andersen-Editor": {
+      "repo": "MariaCnightmare/Andersen-Editor",
+      "default_branch": "develop",
+      "pushed_at": "2026-02-23T14:56:17Z",
+      "pushed_age_days": 4,
+      "html_url": "https://github.com/MariaCnightmare/Andersen-Editor",
+      "branches": {
+        "total": 4,
+        "sampled": 4,
+        "active_7d": 2,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "develop",
+            "sha": "967ae762dcde",
+            "date": "2026-02-23T14:56:16+00:00",
+            "age_days": 4
+          },
+          {
+            "name": "feat/pro-unlock-iap",
+            "sha": "4aa1c60db492",
+            "date": "2026-02-23T14:39:27+00:00",
+            "age_days": 4
+          },
+          {
+            "name": "fix/export-and-header-polish",
+            "sha": "8c9140a2dfd8",
+            "date": "2026-02-14T18:09:27+00:00",
+            "age_days": 12
+          },
+          {
+            "name": "pages-site",
+            "sha": "6eb030c47087",
+            "date": "2026-02-16T04:01:28+00:00",
+            "age_days": 11
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/Andersen-Editor/branches",
+        "pulls": "https://github.com/MariaCnightmare/Andersen-Editor/pulls",
+        "actions": "https://github.com/MariaCnightmare/Andersen-Editor/actions",
+        "network": "https://github.com/MariaCnightmare/Andersen-Editor/network"
+      }
+    },
+    "MariaCnightmare/CheckMechanic": {
+      "repo": "MariaCnightmare/CheckMechanic",
+      "default_branch": "feat/bootstrap",
+      "pushed_at": "2026-02-22T09:53:59Z",
+      "pushed_age_days": 5,
+      "html_url": "https://github.com/MariaCnightmare/CheckMechanic",
+      "branches": {
+        "total": 3,
+        "sampled": 3,
+        "active_7d": 2,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "feat/bootstrap",
+            "sha": "008c53550121",
+            "date": "2026-02-22T09:53:40+00:00",
+            "age_days": 5
+          },
+          {
+            "name": "feat/consent-token",
+            "sha": "7a5471f8c36a",
+            "date": "2026-02-18T09:44:21+00:00",
+            "age_days": 9
+          },
+          {
+            "name": "feat/ui-polish-v2",
+            "sha": "56abe4f33a79",
+            "date": "2026-02-21T21:37:15+00:00",
+            "age_days": 5
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/CheckMechanic/branches",
+        "pulls": "https://github.com/MariaCnightmare/CheckMechanic/pulls",
+        "actions": "https://github.com/MariaCnightmare/CheckMechanic/actions",
+        "network": "https://github.com/MariaCnightmare/CheckMechanic/network"
+      }
+    },
+    "MariaCnightmare/Fund-Link": {
+      "repo": "MariaCnightmare/Fund-Link",
+      "default_branch": "feat/bootstrap",
+      "pushed_at": "2026-02-16T15:50:30Z",
+      "pushed_age_days": 11,
+      "html_url": "https://github.com/MariaCnightmare/Fund-Link",
+      "branches": {
+        "total": 2,
+        "sampled": 2,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "feat/bootstrap",
+            "sha": "a2e5105ddd05",
+            "date": "2026-02-16T13:12:06+00:00",
+            "age_days": 11
+          },
+          {
+            "name": "main",
+            "sha": "b70ce17ca55c",
+            "date": "2026-02-16T15:50:22+00:00",
+            "age_days": 11
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/Fund-Link/branches",
+        "pulls": "https://github.com/MariaCnightmare/Fund-Link/pulls",
+        "actions": "https://github.com/MariaCnightmare/Fund-Link/actions",
+        "network": "https://github.com/MariaCnightmare/Fund-Link/network"
+      }
+    },
+    "MariaCnightmare/MariaCnightmare.github.io": {
+      "repo": "MariaCnightmare/MariaCnightmare.github.io",
+      "default_branch": "main",
+      "pushed_at": "2026-02-27T03:38:13Z",
+      "pushed_age_days": 0,
+      "html_url": "https://github.com/MariaCnightmare/MariaCnightmare.github.io",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 1,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "6383c5f21a60",
+            "date": "2026-02-27T03:38:12+00:00",
+            "age_days": 0
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/MariaCnightmare.github.io/branches",
+        "pulls": "https://github.com/MariaCnightmare/MariaCnightmare.github.io/pulls",
+        "actions": "https://github.com/MariaCnightmare/MariaCnightmare.github.io/actions",
+        "network": "https://github.com/MariaCnightmare/MariaCnightmare.github.io/network"
+      }
+    },
+    "MariaCnightmare/My-Manager": {
+      "repo": "MariaCnightmare/My-Manager",
+      "default_branch": "main",
+      "pushed_at": "2026-02-27T17:39:31Z",
+      "pushed_age_days": 0,
+      "html_url": "https://github.com/MariaCnightmare/My-Manager",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 1,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "b7678225105a",
+            "date": "2026-02-27T17:39:30+00:00",
+            "age_days": 0
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/My-Manager/branches",
+        "pulls": "https://github.com/MariaCnightmare/My-Manager/pulls",
+        "actions": "https://github.com/MariaCnightmare/My-Manager/actions",
+        "network": "https://github.com/MariaCnightmare/My-Manager/network"
+      }
+    },
+    "MariaCnightmare/O.U.G.I": {
+      "repo": "MariaCnightmare/O.U.G.I",
+      "default_branch": "main",
+      "pushed_at": "2026-02-23T21:25:04Z",
+      "pushed_age_days": 3,
+      "html_url": "https://github.com/MariaCnightmare/O.U.G.I",
+      "branches": {
+        "total": 0,
+        "sampled": 0,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": []
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/O.U.G.I/branches",
+        "pulls": "https://github.com/MariaCnightmare/O.U.G.I/pulls",
+        "actions": "https://github.com/MariaCnightmare/O.U.G.I/actions",
+        "network": "https://github.com/MariaCnightmare/O.U.G.I/network"
+      }
+    },
+    "MariaCnightmare/Paperbox": {
+      "repo": "MariaCnightmare/Paperbox",
+      "default_branch": "main",
+      "pushed_at": "2026-02-06T17:43:15Z",
+      "pushed_age_days": 20,
+      "html_url": "https://github.com/MariaCnightmare/Paperbox",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "ff3f0c1e15f8",
+            "date": "2026-02-06T17:42:15+00:00",
+            "age_days": 20
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/Paperbox/branches",
+        "pulls": "https://github.com/MariaCnightmare/Paperbox/pulls",
+        "actions": "https://github.com/MariaCnightmare/Paperbox/actions",
+        "network": "https://github.com/MariaCnightmare/Paperbox/network"
+      }
+    },
+    "MariaCnightmare/PowerLayer": {
+      "repo": "MariaCnightmare/PowerLayer",
+      "default_branch": "main",
+      "pushed_at": "2026-02-11T11:31:19Z",
+      "pushed_age_days": 16,
+      "html_url": "https://github.com/MariaCnightmare/PowerLayer",
+      "branches": {
+        "total": 2,
+        "sampled": 2,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "165d422b1a64",
+            "date": "2026-02-11T11:31:17+00:00",
+            "age_days": 16
+          },
+          {
+            "name": "feature/ui-group-centric",
+            "sha": "38be3627cfb6",
+            "date": "2026-02-11T02:08:28+00:00",
+            "age_days": 16
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/PowerLayer/branches",
+        "pulls": "https://github.com/MariaCnightmare/PowerLayer/pulls",
+        "actions": "https://github.com/MariaCnightmare/PowerLayer/actions",
+        "network": "https://github.com/MariaCnightmare/PowerLayer/network"
+      }
+    },
+    "MariaCnightmare/ReportPlatform": {
+      "repo": "MariaCnightmare/ReportPlatform",
+      "default_branch": "main",
+      "pushed_at": "2026-02-17T18:12:41Z",
+      "pushed_age_days": 9,
+      "html_url": "https://github.com/MariaCnightmare/ReportPlatform",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "49d26e7dd9ca",
+            "date": "2026-02-17T18:12:40+00:00",
+            "age_days": 9
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/ReportPlatform/branches",
+        "pulls": "https://github.com/MariaCnightmare/ReportPlatform/pulls",
+        "actions": "https://github.com/MariaCnightmare/ReportPlatform/actions",
+        "network": "https://github.com/MariaCnightmare/ReportPlatform/network"
+      }
+    },
+    "MariaCnightmare/Stress_Control": {
+      "repo": "MariaCnightmare/Stress_Control",
+      "default_branch": "main",
+      "pushed_at": "2026-02-08T17:07:52Z",
+      "pushed_age_days": 19,
+      "html_url": "https://github.com/MariaCnightmare/Stress_Control",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "2c5c00b3aeba",
+            "date": "2026-02-08T17:07:48+00:00",
+            "age_days": 19
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/Stress_Control/branches",
+        "pulls": "https://github.com/MariaCnightmare/Stress_Control/pulls",
+        "actions": "https://github.com/MariaCnightmare/Stress_Control/actions",
+        "network": "https://github.com/MariaCnightmare/Stress_Control/network"
+      }
+    },
+    "MariaCnightmare/bedrock_client": {
+      "repo": "MariaCnightmare/bedrock_client",
+      "default_branch": "main",
+      "pushed_at": "2026-02-17T16:59:56Z",
+      "pushed_age_days": 10,
+      "html_url": "https://github.com/MariaCnightmare/bedrock_client",
+      "branches": {
+        "total": 1,
+        "sampled": 1,
+        "active_7d": 0,
+        "stale_30d": 0,
+        "items": [
+          {
+            "name": "main",
+            "sha": "23a1de5b44ac",
+            "date": "2026-02-17T16:59:55+00:00",
+            "age_days": 10
+          }
+        ]
+      },
+      "links": {
+        "branches": "https://github.com/MariaCnightmare/bedrock_client/branches",
+        "pulls": "https://github.com/MariaCnightmare/bedrock_client/pulls",
+        "actions": "https://github.com/MariaCnightmare/bedrock_client/actions",
+        "network": "https://github.com/MariaCnightmare/bedrock_client/network"
+      }
+    }
+  },
+  "notes": {
+    "max_branches_per_repo": 8,
+    "commit_dates_are_from_commits_api": true
+  }
+}
