@@ -49,10 +49,14 @@ def now_jst_str(ts: int) -> str:
     return dt.strftime("%Y-%m-%d %H:%M JST")
 
 
-def normalize_status(st: Any) -> str:
-    s = (st or "(Unknown)")
+def normalize_status(item: Dict[str, Any]) -> str:
+    # Project status can be null for untriaged items; keep dashboard actionable by
+    # treating them as Inbox instead of surfacing a large Unknown bucket.
+    s = item.get("status")
     if s in STATUS_ORDER:
         return s
+    if s is None or str(s).strip() == "":
+        return "Inbox"
     return "(Unknown)"
 
 
@@ -60,7 +64,7 @@ def build_counts(items: List[Dict[str, Any]]) -> Dict[str, int]:
     counts: Dict[str, int] = {s: 0 for s in STATUS_ORDER}
     counts["(Unknown)"] = 0
     for it in items:
-        st = normalize_status(it.get("status"))
+        st = normalize_status(it)
         counts[st] += 1
     return counts
 
@@ -79,11 +83,11 @@ def repo_url(repo_full: str) -> str:
 def violations(items: List[Dict[str, Any]]) -> List[str]:
     v: List[str] = []
 
-    doing = [it for it in items if normalize_status(it.get("status")) == "Doing"]
+    doing = [it for it in items if normalize_status(it) == "Doing"]
     if len(doing) > 2:
         v.append(f"WIP超過: Doingが {len(doing)} 件（上限2）")
 
-    blocked = [it for it in items if normalize_status(it.get("status")) == "Blocked"]
+    blocked = [it for it in items if normalize_status(it) == "Blocked"]
     for it in blocked:
         body = ((it.get("content") or {}).get("body") or "")
         if not RE_NEXT.search(body):
@@ -107,7 +111,7 @@ def sort_items(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     order = {s: i for i, s in enumerate(STATUS_ORDER)}
 
     def key(it: Dict[str, Any]) -> Tuple[int, str]:
-        st = normalize_status(it.get("status"))
+        st = normalize_status(it)
         return (order.get(st, 999), (it.get("title") or ""))
 
     return sorted(items, key=key)
@@ -121,7 +125,7 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
         num = c.get("number")
         repo = (c.get("repository") or "").strip()
         ttype = infer_type(it.get("title") or "")
-        st = normalize_status(it.get("status"))
+        st = normalize_status(it)
         title = it.get("title") or ""
         body = (c.get("body") or "").strip()
 
@@ -158,7 +162,7 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
 
 
 def render_group(items: List[Dict[str, Any]], status: str, default_open: bool) -> str:
-    group = [it for it in items if normalize_status(it.get("status")) == status]
+    group = [it for it in items if normalize_status(it) == status]
     if not group:
         return ""
     rows = render_rows(group)
@@ -187,7 +191,7 @@ def build_repo_summary(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     acc: Dict[str, Dict[str, int]] = {}
     for it in items:
         rk = repo_key(it) or "(unknown repo)"
-        st = normalize_status(it.get("status"))
+        st = normalize_status(it)
         if rk not in acc:
             acc[rk] = {s: 0 for s in STATUS_ORDER}
             acc[rk]["(Unknown)"] = 0
