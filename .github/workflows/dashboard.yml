@@ -24,7 +24,7 @@ jobs:
 
       - name: Collect project items
         env:
-          OWNER: ${{ github.repository_owner }}
+          OWNER: "@me"
           PROJECT_NUMBER: "1"
           LIMIT: "2000"
         run: |
