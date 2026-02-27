@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: write
-  projects: read
+  repository-projects: read
 
 jobs:
   build:
