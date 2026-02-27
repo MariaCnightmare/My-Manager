@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -11,6 +10,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 ISSUE_TITLE = "[Implement] Repository Inventory 2026-02"
+
+EXCLUDE_REPOS = {
+    "MariaCnightmare/My-Manager",
+}
 
 
 @dataclass
@@ -77,8 +80,7 @@ def load_project_items(path: Path) -> List[Dict[str, Any]]:
 
 def item_repo_full(it: Dict[str, Any]) -> str:
     c = it.get("content") or {}
-    r = (c.get("repository") or it.get("repository") or "").strip()
-    return r
+    return (c.get("repository") or it.get("repository") or "").strip()
 
 
 def item_url(it: Dict[str, Any]) -> str:
@@ -105,6 +107,8 @@ def build_repo_groups(items: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, A
     for it in items:
         repo = item_repo_full(it)
         if not repo or "/" not in repo:
+            continue
+        if repo in EXCLUDE_REPOS:
             continue
         g.setdefault(repo, []).append(it)
     return g
@@ -158,11 +162,9 @@ def main() -> int:
     runlist_rows: List[str] = []
     runlist_rows.append("\t".join(["repo", "issue_url", "facts_path", "request_path", "output_path"]))
 
-    # stable order
     for repo_full in sorted(groups.keys()):
         owner, repo = repo_full.split("/", 1)
 
-        # Project items summary
         repo_items = groups[repo_full]
         unknown_cnt = sum(1 for it in repo_items if norm_status(it) == "Unknown")
         blocked_cnt = sum(1 for it in repo_items if norm_status(it) == "Blocked")
@@ -179,20 +181,18 @@ def main() -> int:
             else:
                 lines_items.append(f"- [{st}] {title} ({typ})")
 
-        # Repo meta
         default_branch = "main"
         last_push_days: Optional[int] = None
 
-        ok, meta, err = gh_api(f"repos/{owner}/{repo}")
+        ok, meta, _ = gh_api(f"repos/{owner}/{repo}")
         if ok and isinstance(meta, dict):
             default_branch = meta.get("default_branch") or default_branch
             pushed_at = meta.get("pushed_at") or ""
             pushed_dt = iso_to_dt(pushed_at)
             last_push_days = days_ago(pushed_dt, now)
 
-        # Branch samples
         branch_samples: List[str] = []
-        ok, brs, err = gh_api(f"repos/{owner}/{repo}/branches?per_page=100&page=1")
+        ok, brs, _ = gh_api(f"repos/{owner}/{repo}/branches?per_page=100&page=1")
         if ok and isinstance(brs, list):
             names = [b.get("name") for b in brs if isinstance(b, dict) and b.get("name")]
             picked = select_branches(names, default_branch, args.max_branches)
@@ -216,20 +216,15 @@ def main() -> int:
 
         issue_url = gh_issue_url(repo_full) or ""
 
-        # Paths
         safe = repo_full.replace("/", "__")
         facts_path = facts_dir / f"{safe}.md"
         req_path = req_dir / f"{safe}.txt"
         out_path = out_text_dir / f"{safe}.md"
 
-        # Facts text
-        facts = []
+        facts: List[str] = []
         facts.append(f"Repo: {repo_full}")
         facts.append(f"Default branch: {default_branch}")
-        if isinstance(last_push_days, int):
-            facts.append(f"Last push (days): {last_push_days}")
-        else:
-            facts.append("Last push (days): n/a")
+        facts.append(f"Last push (days): {last_push_days if isinstance(last_push_days,int) else 'n/a'}")
         facts.append("")
         facts.append("Branch samples:")
         facts.extend(branch_samples)
@@ -245,7 +240,6 @@ def main() -> int:
 
         facts_path.write_text("\n".join(facts), encoding="utf-8")
 
-        # Request = template + facts
         req_text = template.rstrip() + "\n\n" + "\n".join(facts)
         req_path.write_text(req_text, encoding="utf-8")
 
@@ -253,9 +247,6 @@ def main() -> int:
 
     (out_dir / "runlist.tsv").write_text("\n".join(runlist_rows) + "\n", encoding="utf-8")
     print(f"OK: wrote {out_dir / 'runlist.tsv'}")
-    print(f"OK: facts in {facts_dir}")
-    print(f"OK: requests in {req_dir}")
-    print(f"OK: output targets in {out_text_dir}")
     return 0
 
 
