@@ -15,11 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup GitHub CLI
-        uses: cli/cli@v2
-        with:
-          version: latest
-
       - name: Auth gh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,7 +24,7 @@ jobs:
       - name: Collect project items
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER: "@me"
+          OWNER: ${{ github.repository_owner }}
           PROJECT_NUMBER: "1"
           LIMIT: "2000"
         run: |
