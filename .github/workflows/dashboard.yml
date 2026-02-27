@@ -12,19 +12,18 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PROJECTS_TOKEN || secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Auth gh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh auth status
 
       - name: Collect project items
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
           PROJECT_NUMBER: "1"
           LIMIT: "2000"
@@ -33,8 +32,6 @@ jobs:
           scripts/collect_project.sh
 
       - name: Collect repo meta
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 scripts/collect_repo_meta.py --project-items data/project_items.json --out data/repos_meta.json --max-branches 8
 
