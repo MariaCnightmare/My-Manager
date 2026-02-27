@@ -60,6 +60,34 @@ def normalize_status(item: Dict[str, Any]) -> str:
     return "(Unknown)"
 
 
+def status_reason(item: Dict[str, Any]) -> str:
+    raw = item.get("status")
+    if raw in STATUS_ORDER:
+        return f"Project Status field = {raw}"
+    if raw is None or str(raw).strip() == "":
+        return "Project Status 未設定のため Inbox 扱い"
+    return f"未知のStatus値: {raw}"
+
+
+def build_snapshot(items: List[Dict[str, Any]]) -> List[str]:
+    counts = build_counts(items)
+    implied_inbox = 0
+    for it in items:
+        raw = it.get("status")
+        if raw is None or str(raw).strip() == "":
+            implied_inbox += 1
+
+    lines = [
+        f"Inbox {counts.get('Inbox', 0)} 件（うち Status未設定由来 {implied_inbox} 件）",
+        f"Ready {counts.get('Ready', 0)} 件 / Doing {counts.get('Doing', 0)} 件 / Blocked {counts.get('Blocked', 0)} 件 / Done {counts.get('Done', 0)} 件",
+    ]
+    if counts.get("Doing", 0) == 0 and counts.get("Ready", 0) > 0:
+        lines.append("着手可能な Ready はあるが Doing が 0 のため、実行フェーズに未遷移")
+    if counts.get("Blocked", 0) == 0:
+        lines.append("Blocked は 0 件。現状の停滞要因は依存待ちよりトリアージ寄り")
+    return lines
+
+
 def build_counts(items: List[Dict[str, Any]]) -> Dict[str, int]:
     counts: Dict[str, int] = {s: 0 for s in STATUS_ORDER}
     counts["(Unknown)"] = 0
@@ -156,6 +184,7 @@ def render_rows(items: List[Dict[str, Any]]) -> str:
             f"<div class='sub'>{esc(repo)}</div>"
             f"{details_html}"
             "</td>"
+            f"<td class='colWhy'><span class='why'>{esc(status_reason(it))}</span></td>"
             "</tr>"
         )
     return "\n".join(rows)
@@ -176,7 +205,7 @@ def render_group(items: List[Dict[str, Any]], status: str, default_open: bool) -
   <div class="tableWrap">
     <table class="itemsTable">
       <thead>
-        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
+        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th><th>Why</th></tr>
       </thead>
       <tbody>
         {rows}
@@ -297,6 +326,18 @@ def main() -> None:
         v_html = f"<div class='panel panel-warn'><h2>Rule Violations</h2><ul>{v_items}</ul></div>"
     else:
         v_html = "<div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>"
+    snapshot_lines = "\n".join(f"<li>{esc(x)}</li>" for x in build_snapshot(items_sorted))
+    snapshot_html = f"<div class='panel'><h2>Current Situation</h2><ul>{snapshot_lines}</ul></div>"
+    rule_html = (
+        "<div class='panel'>"
+        "<h2>Status Rules (Dashboard)</h2>"
+        "<ul>"
+        "<li>Project Status が Inbox/Ready/Doing/Blocked/Done の場合はそのまま表示</li>"
+        "<li>Project Status が未設定（null/空）の場合は Inbox として表示</li>"
+        "<li>未定義の値のみ Unknown に分類</li>"
+        "</ul>"
+        "</div>"
+    )
 
     repo_summ = build_repo_summary(items_sorted)
     repo_rows = render_repo_rows(repo_summ)
@@ -595,6 +636,15 @@ def main() -> None:
     .colType {{ width: 120px; }}
     .colNum {{ width: 60px; color: var(--muted); }}
     .colTitle {{ width: auto; overflow: hidden; word-break: break-word; }}
+    .colWhy {{ width: 280px; color: var(--muted2); font-size: 12px; }}
+    .why {{
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 10px;
+      background: rgba(0,0,0,.18);
+      padding: 6px 8px;
+      line-height: 1.4;
+    }}
 
     a {{
       color: rgba(130,180,255,.95);
@@ -694,6 +744,8 @@ def main() -> None:
     </header>
 
     {v_html}
+    {snapshot_html}
+    {rule_html}
 
     <h2 class="section">Repositories</h2>
     <div class="panel">

@@ -283,6 +283,15 @@
     .colType { width: 120px; }
     .colNum { width: 60px; color: var(--muted); }
     .colTitle { width: auto; overflow: hidden; word-break: break-word; }
+    .colWhy { width: 280px; color: var(--muted2); font-size: 12px; }
+    .why {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 10px;
+      background: rgba(0,0,0,.18);
+      padding: 6px 8px;
+      line-height: 1.4;
+    }
 
     a {
       color: rgba(130,180,255,.95);
@@ -364,7 +373,7 @@
     <header>
       <h1>My-Manager Dashboard</h1>
       <div class="meta">
-        Generated: <b>2026-02-28 02:43 JST</b><br/>
+        Generated: <b>2026-02-28 02:46 JST</b><br/>
         Total (reported): <b>17</b> / Items: <b>17</b>
       </div>
 
@@ -382,6 +391,11 @@
     </header>
 
     <div class='panel panel-ok'><h2>Rule Violations</h2><p>なし</p></div>
+    <div class='panel'><h2>Current Situation</h2><ul><li>Inbox 16 件（うち Status未設定由来 14 件）</li>
+<li>Ready 1 件 / Doing 0 件 / Blocked 0 件 / Done 0 件</li>
+<li>着手可能な Ready はあるが Doing が 0 のため、実行フェーズに未遷移</li>
+<li>Blocked は 0 件。現状の停滞要因は依存待ちよりトリアージ寄り</li></ul></div>
+    <div class='panel'><h2>Status Rules (Dashboard)</h2><ul><li>Project Status が Inbox/Ready/Doing/Blocked/Done の場合はそのまま表示</li><li>Project Status が未設定（null/空）の場合は Inbox として表示</li><li>未定義の値のみ Unknown に分類</li></ul></div>
 
     <h2 class="section">Repositories</h2>
     <div class="panel">
@@ -416,11 +430,11 @@
   <div class="tableWrap">
     <table class="itemsTable">
       <thead>
-        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
+        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th><th>Why</th></tr>
       </thead>
       <tbody>
         <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Decide</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/1' target='_blank' rel='noopener noreferrer'>[Decide] 全Repo運用の定義</a><div class='sub'>MariaCnightmare/My-Manager</div><details class='details'><summary>本文</summary><pre class='body'>・台帳に入れる対象（Issue/PR/Draft）を決めた
-・“各RepoにIssue起票”か“My-Managerに集約”か決めた</pre></details></td></tr>
+・“各RepoにIssue起票”か“My-Managerに集約”か決めた</pre></details></td><td class='colWhy'><span class='why'>Project Status field = Inbox</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>3</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Andersen-Editor/issues/3' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Andersen-Editor</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -432,7 +446,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/CheckMechanic/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/CheckMechanic</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -444,7 +458,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Fund-Link/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Fund-Link</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -456,7 +470,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/MariaCnightmare.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/MariaCnightmare.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -468,7 +482,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>4</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/PowerLayer/issues/4' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/PowerLayer</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -480,7 +494,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/ReportPlatform/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/ReportPlatform</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -492,7 +506,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Stress_Control/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Stress_Control</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -504,7 +518,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/bedrock_client/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/bedrock_client</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -516,7 +530,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/O.U.G.I/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/O.U.G.I</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -528,7 +542,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/Paperbox/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>MariaCnightmare/Paperbox</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -540,7 +554,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/apiron-lab.github.io/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/apiron-lab.github.io</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -552,7 +566,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/CSV-Escape-Sanitize/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/CSV-Escape-Sanitize</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -564,7 +578,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/Encoding-Repair/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Encoding-Repair</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -576,7 +590,7 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
 <tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>1</td><td class='colTitle'><a href='https://github.com/APIron-lab/Universal-Token-Counter/issues/1' target='_blank' rel='noopener noreferrer'>[Implement] Repository Inventory 2026-02</a><div class='sub'>APIron-lab/Universal-Token-Counter</div><details class='details'><summary>本文</summary><pre class='body'>## Goal
 Create a baseline inventory record for this repository.
 
@@ -588,8 +602,8 @@ Create a baseline inventory record for this repository.
 - [ ] Confirm security contact and dependency update policy
 
 ## Output
-- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td></tr>
-<tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Investigate</span></td><td class='colNum'>3</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank' rel='noopener noreferrer'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div></td></tr>
+- [ ] Post a short summary in this issue and link relevant docs/PRs</pre></details></td><td class='colWhy'><span class='why'>Project Status 未設定のため Inbox 扱い</span></td></tr>
+<tr><td class='colStatus'><span class='pill st-inbox'>Inbox</span></td><td class='colType'><span class='pill tp'>Investigate</span></td><td class='colNum'>3</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/3' target='_blank' rel='noopener noreferrer'>[Investigate] Project自動投入の方法（手動 / Actions / 定期スイープ）</a><div class='sub'>MariaCnightmare/My-Manager</div></td><td class='colWhy'><span class='why'>Project Status field = Inbox</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -603,10 +617,10 @@ Create a baseline inventory record for this repository.
   <div class="tableWrap">
     <table class="itemsTable">
       <thead>
-        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th></tr>
+        <tr><th>Status</th><th>Type</th><th>#</th><th>Title</th><th>Why</th></tr>
       </thead>
       <tbody>
-        <tr><td class='colStatus'><span class='pill st-ready'>Ready</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div></td></tr>
+        <tr><td class='colStatus'><span class='pill st-ready'>Ready</span></td><td class='colType'><span class='pill tp'>Implement</span></td><td class='colNum'>2</td><td class='colTitle'><a href='https://github.com/MariaCnightmare/My-Manager/issues/2' target='_blank' rel='noopener noreferrer'>[Implement] ダッシュボードPoC（Project items → JSON → HTML）</a><div class='sub'>MariaCnightmare/My-Manager</div></td><td class='colWhy'><span class='why'>Project Status field = Ready</span></td></tr>
       </tbody>
     </table>
   </div>
