@@ -1,0 +1,3 @@
+[submodule "external/moc_pp"]
+	path = external/moc_pp
+	url = https://github.com/MariaCnightmare/moc_pp.git
